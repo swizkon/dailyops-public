@@ -1,0 +1,932 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Try it - Daily Ops</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" / -->
+    <link rel="stylesheet" href="css/DailyOps-app.css" />
+
+</head>
+<body>
+
+    <!-- Will be populated on load -->
+    <!-- nav>
+    </nav -->
+    
+    <div class="handlebars-templates" style="display:none;">
+
+        <div id="today-tasks-template" class="handlebars-template">
+            <!-- h2>Todays tasks</h2 -->
+            
+                        <div id="my-completed-tasks" class="completed-tasks col-md-3">
+                            <h4>Completed</h4>
+                            {{#each completed}}
+                            <div class="item">
+                                {{this.task}}
+                                <small>{{this.repeatMode}} in {{this.plan}}</small>
+                                <a href="#today-tasks-panel" data-planid="{{this.planId}}" data-taskid="{{this.taskId}}" class="revokes-completed-task-link navigates-to-panel">
+                                    revoke
+                                </a>
+                            </div>
+                            {{else}}
+                            <p class="empty">No completed tasks yet...</p>
+                            {{/each}}
+                        </div>
+
+                        <div id="my-current-tasks" class="remaining-tasks col-md-4">
+                            <h4>Remaining</h4>
+                            {{#each remaining}}
+                            <div class="item">
+                                <h3>{{this.task}} <small>{{this.repeatMode}} in {{this.plan}}</small></h3>
+                                
+                                <a href="#task-completed-panel" data-planid="{{this.planId}}" data-taskid="{{this.taskId}}" class="completes-task-link navigates-to-panel">
+                                    Done!
+                                </a>
+                            </div>
+                            {{else}}
+                            <p class="empty">No remaining tasks today!</p>
+                            {{/each}}
+                        </div>
+
+                        <div id="my-upcoming-tasks" class="remaining-tasks col-md-2">
+                            <h4>Upcoming</h4>
+                            No future tasks found...
+                        </div>
+
+                        <div id="all-tasks" class="remaining-tasks col-md-2">
+                            <h4>All (debug)</h4>
+                        
+                            {{#each all}}
+                            <div class="list-item">
+                                {{this.task}}
+                                <small>{{this.repeatMode}} in {{this.plan}}</small>
+                            </div>
+                            {{else}}
+                            <p class="empty">No completed tasks yet...</p>
+                            {{/each}}
+                        </div>
+        </div>
+    
+
+        <div id="plan-list-template" class="handlebars-template">
+        
+            <a href="#new-plan-panel" class="btn btn-default navigates-to-panel">Create a new plan</a>
+
+            <div class="block-list">
+                {{#each plans}}
+                <div class="list-item">
+                    <a href="#plan-overview-panel" data-planid="{{this.id}}" class="plan-link navigates-to-panel">
+                        {{this.name}}
+                        <small>{{this.type}}, {{this.taskCount}} tasks</small>
+                    </a>
+                </div>
+                {{else}}
+                <p class="empty">You have no plans yet...</p>
+                {{/each}}
+            </div>
+
+            <!-- a href="#new-plan-panel" class="navigates-to-panel">Create a new plan <small>Create a new one...</small></a -->
+
+        </div>
+        
+        <div id="plan-overview-template" class="handlebars-template">
+        
+            <div class="block-list">
+                <h4>Collaborators</h4>
+                {{#each collaborators}}
+                <div class="list-item">
+                    <a href="#collaborator-overview-panel" data-taskid="{{this.collaboratorId}}" class="collaborator-link navigates-to-panel">{{this.username}}{{this.displayName}} <small>{{this.role}}</small></a>
+                </div>
+                {{else}}
+                <p class="empty">This plan does not have any collaborators yet...</p>
+                {{/each}}
+            </div>
+
+            <div class="block-list">
+                <h4>Tasks</h4>
+                {{#each tasks}}
+                <div class="list-item">
+                    <a href="#task-overview-panel" data-taskid="{{this.taskId}}" class="task-link navigates-to-panel">{{this.summary}} <small>{{this.repeatMode}}</small></a>
+                </div>
+                {{else}}
+                <p class="empty">This plan does not have any tasks yet...</p>
+                {{/each}}
+            </div>
+
+        </div>
+        
+        <div id="task-list-template" class="handlebars-template">
+            <div class="block-list">
+                <h4>Tasks</h4>
+                {{#each tasks}}
+                <div class="list-item">
+                    <a href="#task-overview-panel" data-taskid="{{this.taskId}}" class="task-link navigates-to-panel">{{this.summary}} <small>{{this.repeatMode}}</small></a>
+                </div>
+                {{else}}
+                <p class="empty">This plan does not have any tasks yet...</p>
+                
+                <div class="list-item">
+                    <a href="#add-task-panel" class="navigates-to-panel">Add the first task <small>Create a new one...</small></a>
+                </div>
+                {{/each}}
+            </div>
+            <a href="#add-task-panel" class="navigates-to-panel">Add another task <small>Create a new one...</small></a>
+
+        </div>
+
+    </div>
+
+    <section>
+    
+        <div class="container unauthenticated-content" id="login-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="index.html" class="btn btn-default">&#8592;</a>
+                    <h2>Sign in to the demo</h2>
+                </div>
+                <div class="content">
+
+
+        <form class="form-horizontal" id="local-login-form" action="tryit.html">
+
+        <fieldset>
+            <legend>Login with a local temporary account</legend>
+            <div class="alert alert-info">
+                <strong>For your consideration</strong>
+                By signing in to this demo you accept the
+                <a href="privacy.html" style="text-decoration:underline;">Privacy policy</a>
+                and
+                <a href="tos.html" style="text-decoration:underline;">Terms of service</a> 
+            </div>
+            <div class="form-group">
+                <label for="localUsername" class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-6">
+                  <input type="text" name="username" placeholder="Username" id="localUsername" class="form-control input-lg" required autofocus />
+                </div>
+              </div>
+              
+            <div class="form-group">
+                <label for="localUsername" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-6">
+                  <input type="password" name="password" placeholder="Local password" id="localPassword" class="form-control input-lg">
+                </div>
+              </div>
+
+              <div class="checkbox col-sm-offset-2">
+                <label>
+                  <input type="checkbox" id="generate-demo-data" /> Generate demo data
+                </label>
+              </div>
+
+        </fieldset>
+
+        <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-lg btn-primary">Sign in with local account</button>
+        </div>
+      </div>
+        </form>
+
+
+  
+  
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="container authenticated-content" id="dashboard-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#login-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2>What do you feel like?</h2>
+                </div>
+                <div class="content">
+                    <div class="block-list">
+                        <div class="list-item">
+                            <a class="loads-todays-tasks navigates-to-panel" href="#today-tasks-panel">Show todays tasks <small>View and tick em off...</small></a>
+                        </div>
+                        <div class="list-item">
+                            <a class="loads-plans navigates-to-panel" href="#plans-panel">Manage plans <small>Edit or add etc...</small></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="container authenticated-content" id="today-tasks-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#dashboard-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2>Today</h2>
+                </div>
+                <div class="content">
+                    <div id="today-tasks-content">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container authenticated-content" id="plans-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#dashboard-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2>Manage your plans</h2>
+                </div>
+                <div class="content">
+                    <div id="plan-list">
+                    Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="container authenticated-content" id="new-plan-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plans-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2>Manage your plans<!-- span class="username"></span --></h2>
+                </div>
+                <div class="content">
+                
+        <form action="#plans" method="post" id="create-plan-form">
+
+        <fieldset>
+            <legend>Create a new plan</legend>
+            <div class="form-group">
+                <label for="planName">The name of the plan:</label>
+                <input type="text" class="form-control input-lg" id="planName" placeholder="Plan name" name="name" required />
+              </div>
+              
+            <div class="form-group">
+            	<label>Define the type of plan</label>
+                <div class="radio">
+                <label>
+                    <input type="radio" value="personal" id="planTypePersonal" name="type" checked="checked" /> This is a plan only for me
+                  </label>
+				  <!-- span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span -->
+              </div>
+                  
+                <div class="radio">
+                <label>
+                    <input type="radio" value="shared" id="planTypeShared" name="type" /> Create as private sharable plan
+                  </label>
+				  <!-- span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span -->
+              </div>
+                  
+                <div class="radio">
+                <label>
+                    <input type="radio" value="public" id="planTypePublic" name="type" /> Public plan that others can subscribe to
+                  </label>
+				  <!-- span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span -->
+                </div>
+
+              </div>
+
+        </fieldset>
+
+        <div class="form-actions">
+          <button class="btn btn-lg btn-primary" type="submit">Create the plan</button>          
+      </div>
+        </form>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container authenticated-content" id="plan-overview-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plans-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2 class="current-plan-name">[Name of the plan]</h2>
+                </div>
+                <div class="content">
+                    <div id="Div1">
+                        <a href="#rename-plan-panel" class="btn btn-default navigates-to-panel">Rename</a>
+                        <a href="#add-task-panel" class="btn btn-default navigates-to-panel">Add task</a>
+                        <a href="#add-collaborator-panel" class="btn btn-default navigates-to-panel">Add collaborator</a>
+                        <a href="#remove-plan-panel" class="btn btn-default navigates-to-panel">Remove plan</a>
+                    </div>
+                    <div id="plan-collaborator-list">
+                        Loading the collaborators for this plan...
+                    </div>
+                    <div id="plan-task-list">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="container authenticated-content" id="add-task-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plan-overview-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2 class="current-plan-name">[Name of the plan]</h2>
+                </div>
+                <div class="content">
+                    <form action="#add-task" method="get" id="add-task-form" onsubmit="return false;">
+                                
+                    <fieldset>
+                        <legend>Add a new task</legend>
+                        <input type="hidden" class="current-plan-id" id="taskPlanId" name="planId" />
+
+                        <div class="form-group">
+                            <label for="taskSummary">Describe the task:</label>
+                            <input type="text" class="form-control input-lg" id="taskSummary" placeholder="Short summary" name="summary" required />
+                          </div>
+              
+                        <div class="form-group">
+
+                            <label>When should this task be performed?</label>
+            
+                            <div class="radio">
+                            <label>
+                                <input type="radio" value="daily" name="repeatMode" checked="checked" /> Every daily
+                              </label>
+                          </div>
+                            <div class="radio">
+                            <label>
+                                <input type="radio" value="weekly" name="repeatMode" /> Every week
+                              </label>
+                          </div>
+                            <div class="radio">
+                                <label>
+                                <input type="radio" value="monthly" name="repeatMode" /> Once a month
+                              </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                <input type="radio" value="annual" name="repeatMode" /> Once a year
+                              </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                <input type="radio" value="sequential" name="repeatMode" /> After another one
+                              </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                <input type="radio" value="oneOff" name="repeatMode" /> Just once
+                              </label>
+                            </div>
+                          </div>
+
+                    </fieldset>
+
+                    <div class="form-group">
+                      <button class="btn btn-lg btn-primary" type="submit">Add task</button>
+                  </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container authenticated-content" id="rename-plan-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plan-overview-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2 class="current-plan-name">[Name of the plan]</h2>
+                </div>
+                <div class="content">
+
+                    <form action="" method="post" id="rename-plan-form" onsubmit="return false;">
+                    <fieldset>
+                        <legend>Change name</legend>
+                        <input type="hidden" class="current-plan-id" name="renamePlanId" id="renamePlanId" />
+                        <div class="form-group">
+                            <label for="collaboratorUsername">
+                                Enter the new name of the plan:</label>
+                            <input type="text" class="form-control input-lg" id="renamePlanNewName" placeholder="New name"
+                                name="newname" required />
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-lg btn-primary" type="submit">Rename</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section>
+    
+        <div class="container authenticated-content" id="task-overview-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plan-overview-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2 class="current-task-title">[Name of the task]</h2>
+                </div>
+                <div class="content">
+                    <div>
+                        <a href="#rename-task-panel" class="btn btn-default navigates-to-panel">Rename</a>
+                        <a href="#remove-task-panel" class="btn btn-default navigates-to-panel">Remove</a>
+                    </div>
+                    <div id="Div4">
+                        Loading the tasks for this plan...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    
+
+    <section>
+        <div class="container authenticated-content" id="add-collaborator-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plan-overview-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2 class="current-plan-name">[Name of the plan]</h2>
+                </div>
+                <div class="content">
+                    <form action="#add-collaborator" method="get" id="add-collaborator-form" onsubmit="return false;">
+                    <fieldset>
+                        <legend>Add collaborator</legend>
+
+                        <input type="hidden" class="current-plan-id" id="addCollaboratorPlanId" name="planId" />
+                   
+                        <div class="form-group">
+                            <label for="collaboratorUsername">
+                                Enter the collaborators username:</label>
+                            <input type="text" class="form-control input-lg" id="collaboratorUsername" placeholder="Collaborator username" name="collaboratorUsername" required />
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                What is the role of the collaborator?</label>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" value="admin" name="collaboratorRole" checked="checked" />
+                                    Admin
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" value="collaborator" name="collaboratorRole" />
+                                    Collaborator
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" value="auditor" name="collaboratorRole" />
+                                    Auditor
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-lg btn-primary" type="submit">Add collaborator</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section>
+        <div class="container authenticated-content" id="remove-plan-panel" style="display:none;">
+            <div class="view">
+                <div class="header">
+                    <a href="#plan-overview-panel" class="btn btn-default navigates-to-panel">&#8592;</a>
+                    <h2 class="current-plan-name">[Name of the plan]</h2>
+                </div>
+                <div class="content">
+                    <form action="#remove-plan" method="get" id="remove-plan-form" onsubmit="return false;">
+                    <fieldset>
+                        <legend>Remove plan</legend>
+                        <input type="hidden" class="current-plan-id" id="removePlanId" name="planId" />
+                        <div class="form-group">
+                            <label for="removePlanReason">Enter a reason:</label>
+                            <input type="text" class="form-control input-lg" id="removePlanReason" placeholder="Deleted because..." name="reason" required />
+                        </div>
+                    </fieldset>
+
+                        <div class="form-actions">
+                          <button type="submit" class="btn btn-lg btn-primary">Remove the plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer class="footer">
+        <div class="footer">
+        
+            <div class="pull-left">
+                &#8592; <a href="index.html">Back to the marketing site</a>, 
+                <a href="privacy.html">Privacy</a>, 
+                <a href="tos.html">Terms of service</a>
+            </div>
+        
+            <div class="unauthenticated-content">
+                Not authenticated
+            </div>
+
+            <div class="authenticated-content">
+                Signed in as <span class="username" style="font-weight:bold;">.username</span>
+                <a class="tryit-signout" href="#">sign out</a>
+            </div>
+            
+                    
+        </div>
+    </footer>
+    
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.0.6/rx.all.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.js"></script>
+    
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha256.js"></script>
+    
+    <script type="text/javascript" src="js/DailyOps.users.js"></script>
+    <script type="text/javascript" src="js/DailyOps.localStorage.js"></script>
+    <script type="text/javascript" src="js/DailyOps.models.js"></script>
+    <script type="text/javascript" src="js/DailyOps.commands.js"></script>
+    <script type="text/javascript" src="js/DailyOps.events.js"></script>
+    <script type="text/javascript" src="js/DailyOps.ux.js"></script>
+    
+<script type="text/javascript">
+
+    // var appCache = {};
+
+    var templates = {};
+    var app = {};
+
+    var handleLocalLogin = function (evt) {
+        var localUsername = $("#localUsername").val();
+        var localPassword = $("#localPassword").val();
+        var loginResult = DailyOps.users.localLogin(localUsername, localPassword);
+        var currentUser = DailyOps.users.current();
+
+        if ($("#generate-demo-data")[0].checked) {
+            // Generate two plans and some tasks for each
+
+            var personalDemoId = CryptoJS.SHA256("personal-stuff-" + new Date()).toString();
+            DailyOps.commands.createPlan(personalDemoId, "My personal", "personal", currentUser.userKey);
+            DailyOps.commands.addTask(personalDemoId, "my-personal-task-1", "Vitamins", "daily", currentUser.userKey);
+            DailyOps.commands.addTask(personalDemoId, "my-personal-task-2", "Training", "daily", currentUser.userKey);
+            DailyOps.commands.addTask(personalDemoId, "my-personal-task-3", "Check private mail", "daily", currentUser.userKey);
+
+            var sharedDemoId = CryptoJS.SHA256("at-the-office-" + new Date()).toString();
+            DailyOps.commands.createPlan(sharedDemoId, "At the office", "shared", currentUser.userKey);
+
+            DailyOps.commands.addTask(sharedDemoId, "at-the-office-task-1", "Water plants", "weekly", currentUser.userKey);
+            DailyOps.commands.addTask(sharedDemoId, "at-the-office-task-2", "Check the mailbox", "daily", currentUser.userKey);
+        }
+
+        if (currentUser && currentUser.userKey) {
+            pageInit();
+            // generate-demo-data
+        }
+        evt.preventDefault();
+    }
+
+    var handleLocalSignout = function (evt) {
+        $("#localUsername").val("");
+        $("#localPassword").val("");
+        var signOutResult = DailyOps.users.localSignOut();
+        pageInit();
+        evt.preventDefault();
+    };
+
+
+
+    var handleCreatePlan = function (evt) {
+
+        var planNameCtrl = $("#planName");
+        var planName = planNameCtrl.val();
+        if (planName === "") {
+            planNameCtrl.addClass("invalid");
+            planNameCtrl.closest("div.form-group").addClass("has-warning");
+            planNameCtrl.closest("div.form-group").slideDown();
+            return;
+        }
+        var planType = $("input[name=type]:checked").val();
+        var planOwner = app.currentUser.userKey;
+
+        var planId = CryptoJS.SHA256(planName + planType + planOwner + new Date().toString()).toString();
+
+        var createPlanResult = DailyOps.commands.createPlan(planId, planName, planType, planOwner);
+
+        evt.preventDefault();
+        $("#create-plan-form")[0].reset();
+        $("input.current-plan-id").val(planId);
+        DailyOps.ux.navigateToPanel("#plan-overview-panel");
+
+        loadPlans(function () {
+            // Do a click on the link...
+            $("input.current-plan-id").val(planId);
+            $("h2.current-plan-name").html(planName + " <small>" + planType + "</small>");
+            // DailyOps.ux.navigateToPanel("#plan-overview-panel");
+            loadTasks(planId, function () {
+                // Do a click on the link...
+                DailyOps.ux.navigateToPanel("#plan-overview-panel");
+            });
+        });
+    }
+
+    var handleRenamePlan = function (evt) {
+
+        var planId = $("#renamePlanId").val();
+        var planType = $("h2.current-plan-name small").first().html();
+        var newNameCtrl = $("#renamePlanNewName");
+        var newName = newNameCtrl.val();
+        if (newName === "") {
+            newNameCtrl.addClass("invalid");
+            newNameCtrl.closest("div.form-group").addClass("has-warning");
+            newNameCtrl.closest("div.form-group").slideDown();
+            return;
+        }
+
+        evt.preventDefault();
+
+        var resultPromise = DailyOps.commands.changePlanName(planId, newName);
+		resultPromise.then(function(){
+			console.log(arguments);
+		},function(){
+			console.log(arguments);
+		});
+
+        $("#rename-plan-form")[0].reset();
+        $("input.current-plan-id").val(planId);
+
+        loadPlans(function () {
+            // Do a click on the link...
+            $("h2.current-plan-name").html(newName + " <small>" + planType + "</small>");
+            DailyOps.ux.navigateToPanel("#plan-overview-panel");
+        });
+    }
+
+    var handleAddTask = function (evt) {
+
+        var planId = $("#taskPlanId").val();
+        var taskSummary = $("#taskSummary").val();
+        var taskRepeatMode = $("input[name=repeatMode]:checked").val();
+        var taskOwner = app.currentUser.userKey;
+
+        var taskId = CryptoJS.SHA256(taskSummary + taskRepeatMode + taskOwner + new Date().toString()).toString();
+
+        var addTaskResult = DailyOps.commands.addTask(planId, taskId, taskSummary, taskRepeatMode, taskOwner);
+		addTaskResult.then(function(){
+			console.log("addTaskResult");
+			console.log(arguments);
+		},function(){
+			console.log("addTaskResult error");
+			console.log(arguments);
+		});
+		
+        evt.preventDefault();
+        $("#add-task-form")[0].reset();
+        $("#taskPlanId").val(planId);
+
+        loadTasks(planId, function () {
+            // Do a click on the link...
+            DailyOps.ux.navigateToPanel("#plan-overview-panel");
+        });
+    };
+
+
+    var loadPlans = function (callback) {
+
+        app.storage.plans(app.currentUser.userKey,
+                function (status, statusText, plans) {
+                    $.each(plans["plans"], function (a, b) {
+                        b.taskCount = b.tasks.length;
+                    });
+                    $("#plans-panel").trigger("disposed");
+                    var menu = templates["plan-list-template"](plans);
+
+                    $("#plan-list").html(menu);
+                    $("#plans-panel").trigger("rendered");
+                    if (callback) {
+                        callback();
+                    }
+                },
+                function () { console.log("Error:" + arguments); });
+    };
+
+
+    var loadTasks = function (planId, callback) {
+        var plan = app.storage.planById(planId);
+        var collaboratorlist = templates["plan-overview-template"](plan);
+        $("#plan-collaborator-list").html(collaboratorlist);
+        $("#plan-overview").trigger("rendered");
+
+        if (callback) {
+            callback();
+        }
+    };
+
+    var loadTodayTasks = function () {
+        var todayTasks = {
+            "alreadyCompleted": [],
+            "toBeCompleted": [],
+            "upcoming": [],
+            "all": []
+        };
+        DailyOps.localStorage.userEnabledTasks(app.currentUser.userKey, onTodayTasksLoaded);
+    };
+
+    var onTodayTasksLoaded = function (resp) {
+        var all = resp.body;
+
+        var completed = all.filter(function(x) { return x.completions.length > 0;});
+        
+        var remaining = all.filter(function(x) { return x.completions.length === 0;});
+
+        console.log(remaining);
+
+        var todayTasks = {
+            "completed": completed,
+            "remaining": remaining,
+            "upcoming": [],
+            "all": all
+        };
+        var templateResult = templates["today-tasks-template"](todayTasks);
+        $("#today-tasks-content").html(templateResult);
+        $("#today-tasks-panel").trigger("rendered");
+    };
+
+
+    var pageInit = function () {
+
+        app.currentUser = DailyOps.users.current();
+
+        if (!app.currentUser.userKey) {
+            DailyOps.ux.navigateToPanel("#login-panel");
+            $("body").removeClass("authenticated");
+            $("body").addClass("unauthenticated");
+        } else {
+
+            // DailyOps.ux.navigateToPanel("#dashboard-panel");
+
+            // authenticated
+            $("body").removeClass("unauthenticated");
+            $("body").addClass("authenticated");
+            $("span.username").html(app.currentUser.displayName);
+
+            $("a.loads-plans").click(function () {
+                loadPlans();
+            });
+
+            $("a.loads-todays-tasks").click(function () {
+                loadTodayTasks();
+            });
+
+            loadTodayTasks();
+            DailyOps.ux.navigateToPanel("#today-tasks-panel");
+
+        }
+    };
+
+
+    $(document).ready(function () {
+
+        // DailyOps.ux.navigateToPanel("#login-panel");
+
+        // Read all the templates...
+        $("div.handlebars-templates div.handlebars-template").each(function (a, b) {
+            var template = $(b);
+            templates[template.attr("id")] = Handlebars.compile(template.html());
+        });
+        $("div.handlebars-templates").remove();
+
+        // Some sort of dependency injection
+        app.storage = DailyOps.localStorage;
+
+        $("#local-login-form").submit(function (event) {
+            handleLocalLogin(event);
+            event.preventDefault();
+        });
+
+
+        $("#today-tasks-content").on("taskMarkedCompleted", function () {
+            loadTodayTasks();
+            console.log("taskMarkedCompleted: " + arguments);
+        });
+
+        $("#today-tasks-content").on("taskCompletionRevoked", function () {
+            loadTodayTasks();
+            console.log("taskCompletionRevoked: " + arguments);
+        });
+
+        $("#today-tasks-panel").on("rendered", function () {
+            console.log(arguments);
+
+            $("#today-tasks-panel a.completes-task-link").click(function () {
+                var sender = $(this);
+                var planId = sender.data("planid");
+                var taskId = sender.data("taskid");
+                var taskName = sender.parent().text().trim();
+                DailyOps.commands.taskCompleted(planId, taskId, app.currentUser);
+
+                $("#today-tasks-content").trigger("taskMarkedCompleted");
+            });
+
+            $("#today-tasks-panel a.revokes-completed-task-link").click(function () {
+                var sender = $(this);
+                var planId = sender.data("planid");
+                var taskId = sender.data("taskid");
+                DailyOps.commands.taskCompletionRevoked(planId, taskId, app.currentUser);
+                $("#today-tasks-content").trigger("taskCompletionRevoked");
+            });
+
+        });
+
+
+        $("#create-plan-form").submit(function (event) {
+            handleCreatePlan(event);
+            event.preventDefault();
+        });
+
+        $("#add-task-form").submit(function (event) {
+            handleAddTask(event);
+            event.preventDefault();
+        });
+
+        $("#add-collaborator-form").submit(function (event) {
+
+            var formdata = $("#myform").serializeArray();
+            var formModel = {};
+
+            $($(this).serializeArray()).each(function (index, obj) {
+                formModel[obj.name] = obj.value;
+            });
+
+            var addTaskResult = DailyOps.commands.collaboratorAdded(formModel.planId, formModel.collaboratorUsername, formModel.collaboratorRole);
+
+            $("#add-collaborator-form")[0].reset();
+            $("#addCollaboratorPlanId").val(planId);
+
+            loadTasks(formModel.planId, function () {
+                // Do a click on the link...
+                DailyOps.ux.navigateToPanel("#plan-overview-panel");
+            });
+
+            event.preventDefault();
+        });
+
+        $("#rename-plan-form").submit(function (event) {
+            handleRenamePlan(event);
+            event.preventDefault();
+        });
+
+
+
+        $("#remove-plan-form").submit(function (event) {
+
+            var planId = $("#removePlanId").val();
+            var reason = $("h2.current-plan-name small").first().html();
+            var reason = $("#removePlanReason");
+            var reasonText = reason.val();
+            if (reasonText === "") {
+                reason.addClass("invalid");
+                reason.closest("div.form-group").addClass("has-warning");
+                reason.closest("div.form-group").slideDown();
+                return;
+            }
+
+            var result = DailyOps.commands.removePlan(planId, reasonText);
+
+            event.preventDefault();
+            $("#remove-plan-form")[0].reset();
+            $("input.current-plan-id").val(planId);
+
+            loadPlans(function () {
+                // Do a click on the link...
+                $("input.current-plan-id").val("");
+                $("h2.current-plan-name").html("Removed <small>The plan was removed</small>");
+                DailyOps.ux.navigateToPanel("#plans-panel");
+            });
+        });
+
+
+
+        $(".tryit-signout").click(handleLocalSignout);
+
+        pageInit();
+    });
+
+
+</script>
+</body>
+</html>

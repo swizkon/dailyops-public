@@ -1,0 +1,29 @@
+/*
+This stylesheet contains the styles shared by all areas.
+*/
+
+body
+{
+    padding-top:50px;
+    margin-bottom: 60px;
+    background-color:#fafafa;
+	color:#333;
+}
+
+
+/***************************************************************************
+* Default layout for the footer
+***************************************************************************/
+
+.footer {
+    background-color:#e6e6e6;
+    bottom:0;
+    position:fixed;
+    width:100%;
+}
+footer.footer div.footer 
+{
+    border-top:solid 1px #666;
+    padding:10px;
+}
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Daily Ops - Single page app</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="css/DailyOps-common.css" />
+    <link rel="stylesheet" href="css/DailyOps-marketing.css" />
+
+</head>
+<body>
+
+    <nav>
+    <!-- Will be populated on oload -->
+    </nav>
+
+    <header>
+        <div class="puff">
+            <div class="puff-text col-sm-3 col-sm-offset-2">
+                <div class="line1">Don&apos;t</div>
+                <div class="line2">panic</div>
+                <div class="line3">Let DailyOps</div>
+                <div class="line4">help you</div>
+            </div>
+            <div class="puff-lead col-sm-4">
+            
+                    <h2>What it is?</h2>
+                    <p class="lead">
+                        DailyOps is a web application that helps you focus on the things you need to get done.
+                        One at the time.
+                    </p>
+            </div>
+        </div>
+    </header>
+    
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 text-center">
+                    <a id="play-intro-button" href="#intro-video-container" class="btn btn-lg btn-primary">Watch the intro</a>
+                    <div id="intro-video-container" style="display:none;">
+                         <video id="intro-video" width="100%" controls>
+                          <source src="media/dailyops2.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="footer">
+            <a href="tryit.html">Try the demo now! <small>No registration required</small></a>
+        </div>
+    </footer>
+    
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("nav").load("global-nav.html #global-nav", function () {
+
+        });
+
+        $("#play-intro-button").click(function () {
+
+            var sender = $(this);
+            sender.hide();
+            $("#intro-video-container").show();
+
+            var introVideo = document.getElementById("intro-video");
+            introVideo.play();
+        });
+    });
+</script>
+
+</body>
+</html>

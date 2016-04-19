@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Terms of service - Daily Ops</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="css/DailyOps-common.css" />
+    <link rel="stylesheet" href="css/DailyOps-legal.css" />
+
+</head>
+<body>
+
+    <nav>
+    <!-- Will be populated on load -->
+    </nav>
+
+    <header>
+        <div class="puff">
+            <div class="puff-text col-sm-3 col-sm-offset-2">
+                <div class="line1">The</div>
+                <div class="line2">Terms</div>
+                <div class="line4">of service</div>
+                <!-- div class="line3">please follow em..</div -->
+            </div>
+            <div class="puff-lead col-sm-4">
+            
+                <h2 class="text-muted">The terms in a nutshell</h2>
+                <p class="lead">
+                    No trolling. Please, behave;<br />
+                    and Keep it clean.
+                </p>
+            </div>
+        </div>
+    </header>
+    
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                
+                    <h2>Using the service</h2>
+                    <p class="lead">
+                        You must follow any policies made available to you within the Service.
+                    </p>
+                    
+                    <h3>Your content is yours</h3>
+                    <p>
+                        Our Service allow you to submit, store, send and receive content.
+                        You retain ownership of any intellectual property rights that you 
+                        hold in that content. In short, what belongs to you stays yours. 
+                    </p>
+                    
+                    <h3>Legal matters</h3>
+                    <p>You may use the Service only as permitted by law, including applicable export and re-export control laws and regulations. </p>
+                    
+                    <p class="lead">
+                    Laws may vary from country to country.
+                    </p>
+                    <p>
+                    Please, make sure you play safe according to national and global rules.
+                    </p>
+                    
+                    <h3>Denial of service</h3>
+                    <p class="lead">Any step over the legal lines may cause termination of your data.</p>
+                    <p>
+                    We may suspend or stop providing the Service to you if you do not comply with our terms or policies or if we are investigating suspected misconduct.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer>
+        <div class="footer">
+        
+            &#8592; <a href="index.html">Home</a>,
+            <a href="privacy.html">Privacy policy</a>,
+            <a href="tos.html">Terms of service</a>,
+            <a href="tryit.html">Try it now!</a>
+        </div>
+    </footer>
+    
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("nav").load("global-nav.html #global-nav", function () {
+
+        });
+
+        $("#play-intro-button").click(function () {
+
+            var sender = $(this);
+            sender.hide();
+            $("#intro-video-container").show();
+
+            var introVideo = document.getElementById("intro-video");
+            introVideo.play();
+        });
+    });
+</script>
+
+</body>
+</html>

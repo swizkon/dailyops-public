@@ -234,3 +234,5 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+src/DailyOps.NET/DailyOps.Web/Web.Release.config
+old/backend/

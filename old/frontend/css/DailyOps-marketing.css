@@ -1,0 +1,100 @@
+/*
+This stylesheet contains the layouts for the marketing side of the project
+*/
+
+/* Importera ett teckensnitt för att fixa lite egen profil för detta projekt*/
+@import url(https://fonts.googleapis.com/css?family=Bangers);
+
+body
+{
+    padding-top:50px;
+    margin-bottom:140px;
+    background-color:#fafafa;
+	color:#333;
+}
+
+
+/* Anpassningar för top menyn + footer meny */
+nav div a.logo-text,
+footer div a
+{
+  font-family:'Bangers';
+  font-size:1.5em;
+}
+
+
+/***************************************************************************
+* Huvud-puffen på huvudsidan.
+***************************************************************************/
+
+header div.puff 
+{
+}
+
+header div.puff div.puff-text
+{
+    padding-top:20px;
+    font-size:2.0em;
+    font-weight:bold;
+    font-family:Georgia, Times New Roman;
+}
+
+header div.puff div.puff-text div
+{
+    position:relative;
+}
+header div.puff div.puff-text div.line1
+{
+    left:100px;
+}
+header div.puff div.puff-text div.line2
+{
+    top:-25px;
+    left:70px;
+    font-size:2.0em;
+}
+header div.puff div.puff-text div.line3
+{
+    top:-35px;
+    left:0px;
+    font-size:1.2em;
+}
+header div.puff div.puff-text div.line4
+{
+    top:-50px;
+    left:70px;
+    font-size:1.5em;
+}
+
+
+/***************************************************************************
+* Layout for the footer
+***************************************************************************/
+
+footer {
+    background-color:#e6e6e6;
+    bottom:0;
+    position:fixed;
+    width:100%;
+}
+footer div.footer 
+{
+    text-align:center;
+    border-top:solid 1px #666;
+    padding:30px;
+}
+footer div.footer a
+{
+    font-size:2.0em;
+}
+footer div.footer a small
+{
+    display:block;
+}
+
+
+
+/***************************************************************************
+* Media Retargeting for smartphones / tablets etc...
+***************************************************************************/
+

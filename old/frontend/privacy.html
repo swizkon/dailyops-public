@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Privacy - Daily Ops</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="css/DailyOps-common.css" />
+    <link rel="stylesheet" href="css/DailyOps-legal.css" />
+
+</head>
+<body>
+
+    <nav>
+    <!-- Will be populated on oload -->
+    </nav>
+
+    <header>
+        <div class="puff">
+            <div class="puff-text col-sm-3 col-sm-offset-2">
+                <div class="line1">Your</div>
+                <div class="line2">privacy</div>
+                <div class="line3">matters to us</div>
+            </div>
+            <div class="puff-lead col-sm-4">
+            
+                <h2 class="text-muted">In short</h2>
+                <p class="lead">
+                    We do not store any personal information about you other than the
+                    name of your choice.
+                </p>
+            </div>
+        </div>
+    </header>
+    
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <h2>Privacy</h2>
+                    <p class="lead">
+                        Data that can be lead to a specific person is stored using hashing algorithms.
+                    </p>
+                    <p>
+                        This means that nobody but you and optionally your peers may connect the data within certain containers.
+                    </p>
+                    <p>
+                    <strong>For example</strong><br />
+                    <em>
+                    You invite your friend Carl to a plan using his Facebook-account.
+                    When he signs in using his Facebook-account we use his facebook identity (like facebook.com/users/123456789)
+                    and convert it into a irreversible userKey (might be something like: bf74e4a280affafbdf6692bc6a9f3d66b03094fbfb4a91589bc7fd6b32664fdb)
+                    </em>
+                    </p>
+                    
+                    <h3>Data we collect</h3>
+                    <p class="lead">We collect and use the minimal set of information to be able to runt the service.</p>
+                    <p>
+                    This means we store common text and information such as plan names and task titeles etc in plain text
+                    under the hashed container for a plan. For users we currently store the username only in the "collaborators"
+                    list for the adminstrators eyes only. The exposed set will use the display name which origin is agnostic to
+                    the system. IE a colaborator added from an admins facebook-list will use the unique id hashed and the users display name.
+                    </p>
+                    
+                    <h3>How we store data</h3>
+                    <p class="lead">The current demo utilizes a component called local storage.</p>
+                    <p>
+                    This means that the data is stored in a browser built-in database.
+                    To clear all data stored by you, simply clear the cache in your browser.
+                    </p>
+                    <p><em>To learn more abut local storage search the web...</em></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="footer">
+        
+            &#8592; <a href="index.html">Home</a>,
+            <a href="privacy.html">Privacy policy</a>,
+            <a href="tos.html">Terms of service</a>,
+
+            <a href="tryit.html">Try it now!</a>
+        </div>
+    </footer>
+    
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("nav").load("global-nav.html #global-nav", function () {
+
+        });
+
+        $("#play-intro-button").click(function () {
+
+            var sender = $(this);
+            sender.hide();
+            $("#intro-video-container").show();
+
+            var introVideo = document.getElementById("intro-video");
+            introVideo.play();
+        });
+    });
+</script>
+
+</body>
+</html>
