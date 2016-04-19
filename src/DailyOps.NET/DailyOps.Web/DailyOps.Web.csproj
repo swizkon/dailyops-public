@@ -196,6 +196,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\ReactConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AuthnController.cs" />
     <Compile Include="Controllers\ExecutionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlanningController.cs" />
@@ -271,6 +272,7 @@
     <Content Include="Views\Execution\Index.cshtml" />
     <Content Include="Views\Planning\Index - Copy.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Authn\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

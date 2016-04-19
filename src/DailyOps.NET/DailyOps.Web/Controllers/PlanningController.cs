@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace DailyOps.Web.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class PlanningController : Controller
     {
         public ActionResult Index()

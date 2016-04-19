@@ -27,6 +27,8 @@ namespace DailyOps.Wiring
             var b = new Switchboard();
 
 
+            //
+            // Personal plan
             b.RegisterHandler<CreatePersonalPlan>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
@@ -47,6 +49,10 @@ namespace DailyOps.Wiring
                 });
             });
 
+
+
+            //
+            // Collab plan
             b.RegisterHandler<CreateCollaborativePlan>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
@@ -66,6 +72,33 @@ namespace DailyOps.Wiring
                 });
             });
 
+
+            //
+            // Distributable plan
+            b.RegisterHandler<CreateDistributablePlan>((c) =>
+            {
+                var repository = new RepositoryFactory(bus, container).Build<Plan>();
+                var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Distributable);
+                repository.Save(plan);
+            });
+
+            b.RegisterSubscriber<DistributablePlanCreated>((c) =>
+            {
+                Persist<Plans, PlanDto>(new PlanDto
+                {
+                    PlanId = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Owner = c.Owner,
+                    NumberOfTasks = 0,
+                    PlanType = PlanType.Distributable.ToString()
+                });
+            });
+
+
+
+            //
+            // Distributable plan
             b.RegisterHandler<CreateTask>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Task>();
@@ -82,6 +115,8 @@ namespace DailyOps.Wiring
                     TaskId = c.Id
                 });
 
+                // Add number of tasks
+                // REVISIT This might nde to be an scalar query.
                 Mutate<Plans, PlanDto>(c.PlanId, 
                     (dto) =>
                     {

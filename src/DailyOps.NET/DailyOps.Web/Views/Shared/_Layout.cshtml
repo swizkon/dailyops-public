@@ -28,8 +28,18 @@
             </div>
 
             <div class="pull-right">
-                Signed in as <span style="font-weight:bold;" class="username">jonas(local)</span>
-                <a href="#" class="tryit-signout">sign out</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div>
+                        Signed in as <span style="font-weight:bold;" class="username">@User.Identity.Name</span>
+                        <a href="/authn/logout">sign out</a>
+                    </div>
+                }
+                else
+                {
+                    <a href="/authn/login">sign in</a>
+                    <b>U DBAD</b>
+                }
             </div>
 
 
