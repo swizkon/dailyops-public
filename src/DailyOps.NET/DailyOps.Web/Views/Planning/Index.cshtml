@@ -1,0 +1,171 @@
+﻿
+<div class="container">
+
+    <div class="view" data-bind="with: plans">
+        <div class="header">
+            <a href="/Home" class="btn btn-default">←</a>
+            <h2>Manage your plans</h2>
+        </div>
+
+        <div class="block-list" data-bind="foreach: $data">
+            <div class="list-item">
+                <a data-bind="click: $root.goToPlan, attr: {href: '#' + PlanId}" class="plan-link">
+                    <span data-bind="text: Name">Plan name</span>
+                    <small><!--ko text: PlanType--><!--/ko-->, <!--ko text: NumberOfTasks--><!--/ko--> task(s)</small>
+                </a>
+            </div>
+        </div>
+
+
+        <form data-bind="submit: $root.createPlan" action="/planning/plans" method="post">
+
+            <fieldset>
+                <legend>Create a new plan</legend>
+                <div class="form-group">
+                    <label for="planName">The name of the plan:</label>
+                    <input type="text" class="form-control input-lg" id="planName" placeholder="Plan name" name="planName" required="" />
+                </div>
+
+                <div class="form-group">
+                    <label for="planDescription">Short description of the plan:</label>
+                    <input type="text" class="form-control input-md" id="planDescription" placeholder="Short description of the plan" name="planDescription" />
+                </div>
+
+                <div class="form-group">
+                    <label>Define the type of plan</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" value="Personal" id="planTypePersonal" name="planType" checked="checked" />
+                            <strong>Personal</strong> - For your eyes only
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" value="Collaborative" id="planTypeShared" name="planType" />
+                            <strong>Collaborative</strong> - Shared with the people of your choice
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" value="Distributable" id="planTypePublic" name="planType" />
+                            <strong>Distributable</strong> - A plan that others can subscribe to
+                        </label>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="form-actions">
+                <button class="btn btn-lg btn-primary" type="submit">Create the plan</button>
+            </div>
+        </form>
+    </div>
+
+
+
+
+    <div class="view" data-bind="with: chosenPlanData">
+        <div class="header">
+            <a href="#" class="btn btn-default">←</a>
+            <h2 data-bind="text: plan.Name + ' - Manage plan'"></h2>
+        </div>
+
+        <div class="content">
+
+            <p data-bind="text: 'Description: ' + plan.Description"></p>
+
+            <div class="row">
+                <div class="tasks col-md-3">
+                    <h4>Tasks</h4>
+                    <form action="/planning/tasks" method="post">
+                        Add task:<br />
+                        <input class="input-lg" name="taskTitle" placeholder="Add new task here" />
+                        <input data-bind="value: plan.PlanId" type="hidden" name="plan" />
+                        <button type="submit">OK</button>
+                    </form>
+                    <div class="tasks" data-bind="foreach: tasks">
+                        <div class="item">
+                            <!--ko text: Title--><!--/ko-->
+                            <small>daily in My personal</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tasks col-md-3">
+                    <h4>Collaborators</h4>
+                    <form action="/planning/collaborators" method="post">
+                        Add collaborator:<br />
+                        <input class="input-lg" name="collaboratorEmail" placeholder="Collaborators e-mail here" />
+                        <input data-bind="value: plan.PlanId" type="hidden" name="plan" />
+                        <button type="submit">Invite</button>
+                    </form>
+                    <div class="collaborators" data-bind="foreach: collaborators">
+                        <div class="item">
+                            <!--ko text: DisplayName--><!--/ko-->
+                            <small data-bind="text: Email"></small>
+                        </div>
+                    </div>
+                    <form action="/planning/collaborators" method="post">
+                        <fieldset>
+                            <legend>Add collaborator</legend>
+                            <input data-bind="value: plan.PlanId" type="hidden" name="plan" />
+
+                            <div class="form-group">
+                                <label for="collaboratorUsername">
+                                    Enter the collaborators username:
+                                </label>
+                                <input type="text" required="" name="collaboratorEmail" placeholder="Collaborators e-mail here" id="collaboratorUsername" class="form-control input-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    What is the role of the collaborator?
+                                </label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="collaboratorRole" value="admin" checked="checked" /> Admin
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="collaboratorRole" value="collaborator" /> Collaborator
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="collaboratorRole" value="auditor" /> Auditor
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-lg btn-primary">Add collaborator</button>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <hr />
+
+    <div class="view">
+        <!--div class="header">
+            <a href="#" class="btn btn-default">←</a>
+            <h2>Manage your plans</h2>
+        </div -->
+        <div class="content">
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script src="~/Scripts/dailyops/dailyops-planning-plans.js"></script>
+}

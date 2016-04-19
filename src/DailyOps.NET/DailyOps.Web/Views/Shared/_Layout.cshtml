@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+        @Styles.Render("~/bundles/bootstrap")
+        @Styles.Render("~/bundles/dailyops")
+
+        @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+
+
+    @RenderBody()
+
+
+    <footer class="footer">
+        <div class="footer">
+
+            <div class="pull-left">
+                DailyOps
+                <a href="/Home">About</a>,
+                <a href="/planning">Manage your plans</a>,
+                <a href="/execution">Todays tasks</a>
+            </div>
+
+            <div class="pull-right">
+                Signed in as <span style="font-weight:bold;" class="username">jonas(local)</span>
+                <a href="#" class="tryit-signout">sign out</a>
+            </div>
+
+
+        </div>
+    </footer>
+
+@Scripts.Render("~/bundles/knockout")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,181 @@
+﻿body
+{
+    padding-top:50px;
+    margin-bottom: 60px;
+    background-color:#fafafa;
+	color:#333;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size:10pt;
+    line-height: 1.42857;
+}
+
+
+/*
+Classes that are usercontext sensitive
+If user is authenticated then hide every
+unauthenticated-user component and vice versa...
+Also supports "pending" components.
+*/
+body.authenticated .unauthenticated-content,
+body.unauthenticated .authenticated-content,
+body.authenticated .authentication-pending,
+body.unauthenticated .authentication-pending
+{
+	display:none;
+}
+
+
+
+/***************************************************************************
+* Media queries to shrink text size etc to fit small screens better
+***************************************************************************/
+
+@media screen and (max-width: 480px) {
+    .h2, h2
+    {
+        font-size:20px;
+    }
+}
+
+
+/***************************************************************************
+* Define the main view components
+***************************************************************************/
+
+div.view 
+{
+    width:100%;
+    margin-top:20px;
+    clear:both;
+}
+div.view div.header
+{
+    background-color:#fafafa;
+    padding:1px 2px 0;
+    border-bottom:solid 1px #999;
+    position:fixed;
+    top:50px;
+    top:0px;
+    width:100%;
+    z-index:344;
+}
+div.view div.header a
+{
+    margin:20px 10px 10px 0;
+    display:block;
+    float:left;
+}
+
+div.view div.content
+{
+    
+}
+
+
+
+
+
+
+/***************************************************************************
+* Define the button like main items component
+***************************************************************************/
+div.block-list div.list-item
+{
+    min-height:50px;
+    display:inline-block;
+    display:inline-table;
+    width:100%;
+}
+@media screen and (min-width: 480px) {
+    div.block-list div.list-item
+    {
+        width:31%;
+    }
+}
+
+div.block-list div.list-item a
+{
+    margin:2px;
+    font-size: 1.2em;
+    padding:15px;
+    background-color:#fff;
+    display:block;
+    border-bottom:solid 2px #eee;
+}
+
+div.block-list div.list-item a:hover
+{
+    text-decoration:none;
+    border-bottom-color:#999;
+}
+
+div.block-list div.list-item a small
+{
+    display:block;
+}
+
+
+
+
+
+/***************************************************************************
+* Custom layout for the "Today" grid view
+***************************************************************************/
+
+.completed-tasks
+{
+    font-size:0.8em;
+}
+.completed-tasks div.item
+{
+    border-top:solid 1px #ccc;
+    padding:10px 0;
+}
+.completed-tasks div.item a
+{
+    display:block;
+}
+
+.remaining-tasks
+{
+    
+}
+.remaining-tasks div.item
+{
+    background-color:#fff;
+    border-top:solid 1px #ccc;
+    padding:10px;
+}
+.remaining-tasks div.item h3
+{
+    margin:0;
+    padding:0;
+}
+.remaining-tasks div.item h3 small
+{
+    display:block;
+}
+.remaining-tasks div.item a
+{
+    display:block;
+}
+
+
+
+/***************************************************************************
+* Layout for the footer
+***************************************************************************/
+.footer
+{
+    background-color:#e6e6e6;
+    bottom:0;
+    position:fixed;
+    width:100%;
+}
+footer div.footer 
+{
+    text-align:center;
+    border-top:solid 1px #666;
+    padding:10px;
+}
+

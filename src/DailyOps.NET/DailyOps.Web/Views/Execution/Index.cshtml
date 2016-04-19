@@ -1,0 +1,80 @@
+﻿
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Knockout da test</h1>
+            <div id="container">
+                <!-- This element's contents will be replaced with your component. -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Folders -->
+<ul class="folders" data-bind="foreach: folders">
+    <li data-bind="text: $data,
+               css: { selected: $data == $root.chosenFolderId() },
+               click: $root.goToFolder"></li>
+</ul>
+
+
+<table class="mails" data-bind="with: chosenFolderData">
+    <thead><tr><th>From</th><th>To</th><th>Subject</th><th>Date</th></tr></thead>
+    <tbody data-bind="foreach: mails">
+        <tr>
+            <td data-bind="text: from"></td>
+            <td data-bind="text: to"></td>
+            <td data-bind="text: subject"></td>
+            <td data-bind="text: date"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<div class="completed-tasks col-md-3" data-bind="with: completedTasks">
+    <h4>Completed today</h4>
+    <div data-bind="foreach: $data">
+        <div class="item">
+            <span data-bind="text: $data.Title"></span>
+            <small data-bind="text: ' by ' + CompletedBy">weekly in At the office</small>
+
+            <a href="#today-tasks-panel" data-planid="" data-taskid="at-the-office-task-1" class="revokes-completed-task-link navigates-to-panel">
+                revoke
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<div class="remaining-tasks col-md-3" data-bind="with: remainingTasks">
+    <h4>Remaining today</h4>
+    <div data-bind="foreach: $data">
+        <div class="item">
+            <h3><span data-bind="text: $data.Title"></span> <small data-bind="text: TaskType + ' in ' + PlanName">daily in My personal</small></h3>
+
+            <a href="#task-completed-panel" data-planid="90960302abddb6fe4bcbf315a8468e4305e51ddf88d7c0e558c7cabaf91ced3a" data-taskid="my-personal-task-2" class="completes-task-link navigates-to-panel">
+                Done!
+            </a>
+        </div>
+        <div class="item">
+            <span data-bind="text: $data.Title"></span>
+            <small data-bind="text: ' Plan ' + PlanName">weekly in At the office</small>
+
+            <a href="#today-tasks-panel" data-planid="" data-taskid="at-the-office-task-1" class="revokes-completed-task-link navigates-to-panel">
+                Done!
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@section scripts
+{
+    <script src="~/Scripts/dailyops/dailyops-execution.js"></script>
+}
