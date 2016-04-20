@@ -127,8 +127,7 @@ namespace DailyOps.Wiring.ReadModels
 
             StringBuilder data = new StringBuilder();
 
-            schema
-                .Create((a) =>
+            schema.Create((a) =>
                 {
                     data.AppendLine(a);
                 }, false);

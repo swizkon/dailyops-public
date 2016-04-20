@@ -33,6 +33,7 @@ namespace DailyOps.Wiring
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
                 var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Personal);
+                plan.AssignOwnership(c.Owner);
                 repository.Save(plan);
             });
 
@@ -57,6 +58,7 @@ namespace DailyOps.Wiring
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
                 var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Collaborative);
+                plan.AssignOwnership(c.Owner);
                 repository.Save(plan);
             });
 
@@ -79,6 +81,8 @@ namespace DailyOps.Wiring
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
                 var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Distributable);
+                plan.AssignOwnership(c.Owner);
+
                 repository.Save(plan);
             });
 
@@ -93,12 +97,13 @@ namespace DailyOps.Wiring
                     NumberOfTasks = 0,
                     PlanType = PlanType.Distributable.ToString()
                 });
+
             });
 
 
 
             //
-            // Distributable plan
+            // Task
             b.RegisterHandler<CreateTask>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Task>();
@@ -139,7 +144,7 @@ namespace DailyOps.Wiring
                 Persist<CollaborationRepo, CollaboratorDto>(new CollaboratorDto
                 {
                     PlanId = c.PlanId,
-                    Email = c.Name,
+                    Username = c.Name,
                     Role = c.Role,
                     DisplayName = c.Name,
                     CollaboratorId = Guid.NewGuid()

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace DailyOps.Web.Controllers
 {
+    [Authorize]
     public class ExecutionController : Controller
     {
         public ActionResult Index()
@@ -40,6 +41,8 @@ namespace DailyOps.Web.Controllers
         [HttpGet, ActionName("remainingTasks")]
         public ActionResult RemainingTasks()
         {
+            var allPlansForCurrentUser = Wiring.Proxy.Collaborators.AvailablePlansForUser(HttpContext.User);
+
             var list = new List<RemainingTaskDto>();
             for (int i = 0; i < 13; i++)
             {

@@ -36,5 +36,10 @@ namespace DailyOps.Domain
         {
             AcceptChange(new PlanCollaboratorAdded(this.AggregateId, name, role));
         }
+
+        public void AssignOwnership(string owner)
+        {
+            AcceptChange(new PlanCollaboratorAdded(this.AggregateId, owner, "Admin"));
+        }
     }
 }

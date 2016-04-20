@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,6 +35,22 @@ namespace DailyOps.Wiring.ReadModels
             });
         }
         */
+
+        public IEnumerable<Guid> AvailablePlansForUser(IPrincipal principal)
+        {
+            return base.Query<CollaboratorDto>((session) =>
+            {
+                return session.QueryOver<CollaboratorDto>().Where(t => t.Username == principal.Identity.Name).List();
+            })
+            .ToList()
+            .ConvertAll<Guid>(
+                c =>
+                {
+                    return c.PlanId;
+                }
+                )
+                .Distinct();
+        }
     }
 
 
@@ -72,7 +89,7 @@ namespace DailyOps.Wiring.ReadModels
             this.Id(p => p.CollaboratorId);
             this.Property(p => p.PlanId);
             this.Property(p => p.DisplayName);
-            this.Property(p => p.Email);
+            this.Property(p => p.Username);
             this.Property(p => p.Role);
         }
     }
@@ -82,7 +99,7 @@ namespace DailyOps.Wiring.ReadModels
         public virtual Guid CollaboratorId { get; set; }
         public virtual Guid PlanId { get; set; }
         public virtual string DisplayName { get; set; }
-        public virtual string Email { get; set; }
+        public virtual string Username { get; set; }
         public virtual string Role { get; set; }
     }
 }

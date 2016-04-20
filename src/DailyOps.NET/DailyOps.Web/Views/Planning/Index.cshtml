@@ -3,7 +3,7 @@
 
     <div class="view" data-bind="with: plans">
         <div class="header">
-            <a href="/Home" class="btn btn-default">←</a>
+            <a href="/" class="btn btn-default">←</a>
             <h2>Manage your plans</h2>
         </div>
 
@@ -92,20 +92,17 @@
                 </div>
 
                 <div class="tasks col-md-3">
-                    <h4>Collaborators</h4>
-                    <form action="/planning/collaborators" method="post">
-                        Add collaborator:<br />
-                        <input class="input-lg" name="collaboratorEmail" placeholder="Collaborators e-mail here" />
-                        <input data-bind="value: plan.PlanId" type="hidden" name="plan" />
-                        <button type="submit">Invite</button>
-                    </form>
+                    <h3>Collaborators</h3>
+                    <div data-bind="if: plan.PlanType!='Collaborative'">
+                        N/A. To enable collaboration you must create a collaborative plan.
+                    </div>
                     <div class="collaborators" data-bind="foreach: collaborators">
                         <div class="item">
                             <!--ko text: DisplayName--><!--/ko-->
-                            <small data-bind="text: Email"></small>
+                            <small data-bind="text: Role"></small>
                         </div>
                     </div>
-                    <form action="/planning/collaborators" method="post">
+                    <form data-bind="if: plan.PlanType=='Collaborative'" action="/planning/collaborators" method="post">
                         <fieldset>
                             <legend>Add collaborator</legend>
                             <input data-bind="value: plan.PlanId" type="hidden" name="plan" />
@@ -114,7 +111,7 @@
                                 <label for="collaboratorUsername">
                                     Enter the collaborators username:
                                 </label>
-                                <input type="text" required="" name="collaboratorEmail" placeholder="Collaborators e-mail here" id="collaboratorUsername" class="form-control input-lg" />
+                                <input type="text" required="" name="collaboratorUsername" placeholder="Collaborators e-mail here" id="collaboratorUsername" class="form-control input-lg" />
                             </div>
                             <div class="form-group">
                                 <label>

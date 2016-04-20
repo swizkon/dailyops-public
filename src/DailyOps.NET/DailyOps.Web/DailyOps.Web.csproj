@@ -198,8 +198,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AuthnController.cs" />
     <Compile Include="Controllers\ExecutionController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\PlanningController.cs" />
+    <Compile Include="Filters\PlanAuthzFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -271,12 +272,11 @@
     <Content Include="Views\Plan\Index.cshtml" />
     <Content Include="Views\Execution\Index.cshtml" />
     <Content Include="Views\Planning\Index - Copy.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\About\Index.cshtml" />
     <Content Include="Views\Authn\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Filters\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,17 @@ namespace DailyOps.Web
     {
         protected void Application_Start()
         {
+
+            // Will cause the demo data to be removed on deploy
+            string schemaFile = HttpRuntime.AppDomainAppPath.TrimEnd('\\') + "\\App_Data\\DailyOps.ReadModels.Schema.mysql";
+
+            if(!System.IO.File.Exists(schemaFile))
+            {
+                Wiring.Proxy.GenerateSchemaToFile(schemaFile);
+                Wiring.Proxy.CreateReadModelDB();
+            }
+
+
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

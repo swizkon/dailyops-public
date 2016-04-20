@@ -1,10 +1,12 @@
 ﻿using DailyOps.Commands;
 using DailyOps.Domain;
+using DailyOps.Web.Filters;
 using DailyOps.Wiring.ReadModels;
 using Nuclear.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -87,7 +89,10 @@ namespace DailyOps.Web.Controllers
 
 
         [HttpPost, ActionName("tasks")]
-        public ActionResult HandleCreateTask([System.Web.Http.FromBody] Guid plan, [System.Web.Http.FromBody] string taskTitle)
+        [PlanAuthorizeFilter("plan", "Admin,Collaborator")]
+        public ActionResult HandleCreateTask(
+            [System.Web.Http.FromBody] Guid plan, 
+            [System.Web.Http.FromBody] string taskTitle)
         {
             if (String.IsNullOrEmpty(taskTitle))
                 throw new ArgumentNullException("taskTitle");
@@ -108,14 +113,28 @@ namespace DailyOps.Web.Controllers
 
 
         [HttpPost, ActionName("collaborators")]
-        public ActionResult HandleAddCollaborator([System.Web.Http.FromBody] Guid plan, [System.Web.Http.FromBody] string collaboratorEmail)
+        [PlanAuthorizeFilter("plan", "Admin")]
+        public ActionResult HandleAddCollaborator(
+            [System.Web.Http.FromBody] Guid plan,
+            [System.Web.Http.FromBody] string collaboratorUsername,
+            [System.Web.Http.FromBody] string collaboratorRole)
         {
-            if (String.IsNullOrEmpty(collaboratorEmail))
-                throw new ArgumentNullException("collaboratorEmail");
+            if (String.IsNullOrEmpty(collaboratorUsername))
+                throw new ArgumentNullException("collaboratorUsername");
+
+            if (String.IsNullOrEmpty(collaboratorRole))
+                throw new ArgumentNullException("collaboratorRole");
+
+            
+            if (!ModelState.IsValid)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, ModelState.Values.ToString());
+            }
+
 
             var planId = new PlanId(plan);
 
-            var command = new AddCollaborator(planId, collaboratorEmail, "Admin");
+            var command = new AddCollaborator(planId, collaboratorUsername, collaboratorRole);
 
             Wiring.Proxy.SendCommand(command);
 
