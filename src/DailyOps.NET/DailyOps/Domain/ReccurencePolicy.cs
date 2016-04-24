@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace DailyOps.Domain
 {
-    public enum TaskType
+    internal class ReccurencePolicy
     {
-        Daily,
-        Weekly,
-        Monthly,
-        Annual,
-        OneOff,
-        Sequential
     }
 }

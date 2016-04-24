@@ -11,30 +11,54 @@
     function TasksViewModel() {
         // Data
         var self = this;
-        self.folders = ['Completed today', 'Today', 'Upcoming'];
-        self.chosenFolderId = ko.observable();
-        self.chosenFolderData = ko.observable();
 
+        self.remainingToday = [];
 
-        self.goToFolder = function (folder) {
-            self.chosenFolderId(folder);
-            // alert(folder);
-            $.get('/mail', { folder: folder }, self.chosenFolderData);
+        self.completedToday = [];
+
+        self.markCompleted = function (task) {
+            $.post('/execution/completedTasks',
+                { 'task': task.TaskId, 'localTimestamp': new Date() },
+                function (data) {
+                // self.remainingToday = data;
+                // self.completedTasks(self.completedToday);
+                // self.remainingTasks(self.remainingToday);
+                }
+            );
+            // console.log(task);
+            self.remainingToday = self.remainingToday.filter(function (t) {
+                return t.TaskId !== task.TaskId;
+            });
+            self.completedToday.push(task);
+            self.completedTasks(self.completedToday);
+            self.remainingTasks(self.remainingToday);
         };
-        // self.goToFolder('Inbox');
+
+        self.revokeCompleted = function (task) {
+            // console.log(task);
+            self.completedToday = self.completedToday.filter(function (t) {
+                return t.TaskId !== task.TaskId;
+            });
+            self.remainingToday.push(task);
+            self.completedTasks(self.completedToday);
+            self.remainingTasks(self.remainingToday);
+        };
 
         //
         // Task management
         self.loadTasks = function (filter, obserableTarget) {
-            // self.chosenFolderId(folder);
-            $.get('/execution/' + filter, { 'context': filter }, obserableTarget);
+            // $.get('/execution/' + filter, { 'context': filter }, obserableTarget);
+            $.get('/execution/' + filter, { 'context': filter }, function (data) {
+                self.remainingToday = data;
+                self.completedTasks(self.completedToday);
+                self.remainingTasks(self.remainingToday);
+            });
+            // self.allTasks = ;
         };
 
-        self.completedTasks = ko.observable();
-        self.loadTasks('completedTasks', self.completedTasks);
-
         self.remainingTasks = ko.observable();
-        self.loadTasks('remainingTasks', self.remainingTasks);
+        self.completedTasks = ko.observable([]);
+        self.loadTasks('allTasks', self.remainingTasks);
     };
 
     ko.applyBindings(new TasksViewModel());

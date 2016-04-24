@@ -1,4 +1,5 @@
-﻿using NHibernate.Mapping.ByCode.Conformist;
+﻿using DailyOps.Domain;
+using NHibernate.Mapping.ByCode.Conformist;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -25,6 +26,17 @@ namespace DailyOps.Wiring.ReadModels
             });
         }
 
+        public IEnumerable<CompletedTaskDto> CompletedTasksInPlan(Guid planId)
+        {
+            return base.Query<CompletedTaskDto>((session) =>
+            {
+                return session
+                    .QueryOver<CompletedTaskDto>()
+                    .Where(t => t.PlanId == planId)
+                    .List();
+            });
+        }
+
         public void Add(TaskDto task)
         {
             /* Create a session and execute a query: */
@@ -32,6 +44,35 @@ namespace DailyOps.Wiring.ReadModels
             {
                 session.SaveOrUpdate(task);
             });
+        }
+
+        public List<TaskDto> TasksInPlans(IEnumerable<PlanId> allPlansForCurrentUser)
+        {
+            List<TaskDto> result = new List<TaskDto>();
+            foreach (var planId in allPlansForCurrentUser)
+            {
+                result.AddRange(this.TaskInPlan((Guid)planId));
+            }
+
+            // result.Sort();
+            return result;
+        }
+
+        public List<CompletedTaskDto> CompletedTasksInPlans(IEnumerable<PlanId> allPlansForCurrentUser)
+        {
+            List<CompletedTaskDto> result = new List<CompletedTaskDto>();
+            foreach (var planId in allPlansForCurrentUser)
+            {
+                result.AddRange(this.CompletedTasksInPlan((Guid)planId));
+            }
+
+            // result.Sort();
+            return result;
+        }
+
+        public TaskDto TaskWithId(TaskId taskId)
+        {
+            return base.FindById<TaskDto>((Guid)taskId);
         }
     }
 
@@ -42,21 +83,25 @@ namespace DailyOps.Wiring.ReadModels
         {
             this.Table("dailyops_tasks");
             this.Id(p => p.TaskId);
+            this.Property(p => p.TaskTitle);
             this.Property(p => p.PlanId);
-            this.Property(p => p.Title);
+            this.Property(p => p.PlanName);
             this.Property(p => p.Description);
+            this.Property(p => p.Reccurence);
+            this.Property(p => p.LastCompletion);
         }
     }
 
     public class TaskDto
     {
         public virtual Guid PlanId { get; set; }
-
+        public virtual string PlanName { get; set; }
         public virtual Guid TaskId { get; set; }
-
-        public virtual string Title { get; set; }
-
+        public virtual string TaskTitle { get; set; }
         public virtual string Description { get; set; }
+        public virtual string Reccurence { get; set; }
+        public virtual string LastCompletion { get; set; }
+        
     }
 
 
@@ -67,7 +112,7 @@ namespace DailyOps.Wiring.ReadModels
             this.Table("dailyops_completed_tasks");
             this.Id(p => p.TaskId);
             this.Property(p => p.PlanId);
-            this.Property(p => p.Title);
+            // this.Property(p => p.Title);
             this.Property(p => p.LastCompleted);
             this.Property(p => p.CompletedBy);
         }
@@ -75,14 +120,11 @@ namespace DailyOps.Wiring.ReadModels
 
     public class CompletedTaskDto
     {
+        public virtual Guid TaskId { get; set; }
         public virtual Guid PlanId { get; set; }
 
-        public virtual Guid TaskId { get; set; }
-
-        public virtual string Title { get; set; }
-
+        // public virtual string Title { get; set; }
         public virtual string LastCompleted { get; set; }
-
         public virtual string CompletedBy { get; set; }
     }
 
@@ -94,7 +136,7 @@ namespace DailyOps.Wiring.ReadModels
         {
             this.Table("dailyops_remaining_tasks");
             this.Id(p => p.TaskId);
-            this.Property(p => p.Title);
+            this.Property(p => p.TaskTitle);
             this.Property(p => p.PlanName);
             this.Property(p => p.TaskType);
         }
@@ -104,7 +146,7 @@ namespace DailyOps.Wiring.ReadModels
     {
         public virtual Guid TaskId { get; set; }
 
-        public virtual string Title { get; set; }
+        public virtual string TaskTitle { get; set; }
 
         public virtual string PlanName { get; set; }
 

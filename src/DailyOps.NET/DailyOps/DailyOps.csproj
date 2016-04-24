@@ -51,7 +51,7 @@
     <Compile Include="Domain\PlanId.cs" />
     <Compile Include="Domain\PlanType.cs" />
     <Compile Include="Domain\Task.cs" />
-    <Compile Include="Domain\TaskType.cs" />
+    <Compile Include="Domain\Reccurence.cs" />
     <Compile Include="Events\PlanEvents.cs" />
     <Compile Include="Events\TaskEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

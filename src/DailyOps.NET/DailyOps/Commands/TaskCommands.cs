@@ -14,14 +14,14 @@ namespace DailyOps.Commands
         public readonly Guid PlanId;
         public readonly Guid TaskId;
         public readonly string Name;
-        public readonly TaskType TaskType;
+        public readonly Reccurence Interval;
 
-        public CreateTask(PlanId planId, TaskId taskId, string name, TaskType type)
+        public CreateTask(PlanId planId, TaskId taskId, string name, Reccurence interval)
         {
             PlanId = (Guid) planId;
             TaskId = (Guid) taskId;
             Name = name;
-            TaskType = type;
+            Interval = interval;
         }
     }
 
@@ -32,9 +32,9 @@ namespace DailyOps.Commands
         public readonly Guid TaskId;
         public readonly string CompletedBy;
 
-        public MarkTaskCompleted(Guid taskId, string completedBy, DateTimeOffset timestamp)
+        public MarkTaskCompleted(TaskId taskId, string completedBy, DateTimeOffset timestamp)
         {
-            TaskId = taskId;
+            TaskId = (Guid)taskId;
             CompletedBy = completedBy;
             Timestamp = timestamp;
         }

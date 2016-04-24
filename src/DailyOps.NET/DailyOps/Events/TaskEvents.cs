@@ -1,4 +1,5 @@
-﻿using Nuclear.Domain;
+﻿using DailyOps.Domain;
+using Nuclear.Domain;
 using Nuclear.Messaging;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,14 @@ namespace DailyOps.Events
         public readonly Guid Id;
         public readonly Guid PlanId;
         public readonly string Title;
+        public readonly Reccurence Interval;
 
-        public TaskCreated(Guid id, Guid planId, string title)
+        public TaskCreated(Guid id, Guid planId, string title, Reccurence interval)
         {
             Id = id;
             PlanId = planId;
             Title = title;
+            Interval = interval;
         }
     }
 
@@ -34,15 +37,18 @@ namespace DailyOps.Events
         }
     }
 
-    public class TaskCompleted : DomainEvent
+    public class TaskMarkedCompleted : DomainEvent
     {
         public readonly Guid Id;
         public readonly string User;
+        public readonly string Timestamp;
 
-        public TaskCompleted(Guid id, string user)
+        public TaskMarkedCompleted(Guid id, string user, string timestamp)
         {
             Id = id;
             User = user;
+            Timestamp = timestamp;
         }
+
     }
 }

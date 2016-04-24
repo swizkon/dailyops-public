@@ -200,6 +200,7 @@
     <Compile Include="Controllers\ExecutionController.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\PlanningController.cs" />
+    <Compile Include="Filters\TaskAuthorizationFilter.cs" />
     <Compile Include="Filters\PlanAuthzFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -207,6 +208,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\README.txt" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -276,7 +278,6 @@
     <Content Include="Views\Authn\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

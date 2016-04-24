@@ -2,6 +2,7 @@
 using DailyOps.Domain;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -16,6 +17,7 @@ namespace DailyOps.TestConsole
         {
             // Do some stuf..
 
+            Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("jonas(guest)"), "".Split(','));
 
             string schemaFile = System.Environment.CurrentDirectory + "\\DailyOps.ReadModels.Schema.mysql";
 
@@ -23,28 +25,98 @@ namespace DailyOps.TestConsole
             Wiring.Proxy.CreateReadModelDB();
 
 
+            generatePlans();
+            // Console.ReadKey();
 
-            Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("jonas@jerndin.se"), "".Split(','));
+        }
+
+
+        static void generatePlans()
+        {
+            generateSignePlan();
+            generateDesmondPlan();
+
+            generateAcmePlan();
+        }
+
+        static void generateAcmePlan()
+        {
+
 
             PlanId planId = new PlanId();
-
-
-            var newPLan = new CreateCollaborativePlan(planId, "Signes", "Description goes here...", Thread.CurrentPrincipal.Identity.Name);
-
+            var newPLan = new CreateCollaborativePlan(planId, "ACME plan", "Description goes here...", "BigBoss(guest)");
 
             Wiring.Proxy.SendCommand(newPLan);
 
-            foreach (string task in "D-droppar,Kåvepenin x 3,Borsta tänderna,Kolla naglar".Split(','))
+            foreach (string task in "Write executive summary,Tax planning".Split(','))
             {
+                Console.WriteLine(task);
                 TaskId taskId = new TaskId();
-                Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Domain.TaskType.Daily));
-                Thread.Sleep(500);
+                Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Reccurence.Daily));
+                Thread.Sleep(200);
             }
 
-            AddCollaborator cmd = new AddCollaborator(planId, "jonas@jerndin.se", "Admin");
-            Wiring.Proxy.SendCommand(cmd);
+        }
 
-            // Console.ReadKey();
+
+        static void generateSignePlan()
+        {
+
+
+            PlanId planId = new PlanId();
+            var newPLan = new CreateCollaborativePlan(planId, "Signes behov", "Description goes here...", Thread.CurrentPrincipal.Identity.Name);
+
+            Wiring.Proxy.SendCommand(newPLan);
+
+            Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jonas(guest)", "Admin"));
+            Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jenny(guest)", "Collaborator"));
+
+            foreach (string task in "D-droppar,Kåvepenin - morgon,Kåvepenin - eftermiddag,Kåvepenin - kväll,Borsta tänderna - morgon,Borsta tänderna - kväll,Kolla naglar".Split(','))
+            {
+                Console.WriteLine(task);
+                TaskId taskId = new TaskId();
+                Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Reccurence.Daily));
+                Thread.Sleep(200);
+            }
+
+        }
+
+        static void generateDesmondPlan()
+        {
+
+            var days = CultureInfo.CurrentCulture.DateTimeFormat.DayNames; 
+
+
+            PlanId planId = new PlanId();
+            var newPLan = new CreateCollaborativePlan(planId, "Desmonds åtaganden", "Saker som Desmond ska göra för att få veckopeng", Thread.CurrentPrincipal.Identity.Name);
+
+            Wiring.Proxy.SendCommand(newPLan);
+
+            Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jonas(guest)", "Admin"));
+            Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jenny(guest)", "Collaborator"));
+            Wiring.Proxy.SendCommand(new AddCollaborator(planId, "desmond(guest)", "Auditor"));
+
+            foreach (string taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på onsdag),Packa gympakläder läsläxa(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
+            {
+                Console.WriteLine(taskTitle);
+                TaskId taskId = new TaskId();
+                var taskCommand = new CreateTask(planId, taskId, taskTitle, Reccurence.Daily);
+
+                Wiring.Proxy.SendCommand(taskCommand);
+                Thread.Sleep(200); // Power nap to allow col down...
+
+
+
+                var complete = new MarkTaskCompleted(taskId, "jonas(guest)", DateTimeOffset.Now );
+
+                Wiring.Proxy.SendCommand(complete);
+                Thread.Sleep(200); // Power nap to allow col down...
+
+                // Check for day names in the culture, 
+
+                // Check if we can generate and reccurence policy, ie "Every week on Tuesdays" => "Every [interval] on [dayName]"
+
+            }
 
         }
     }

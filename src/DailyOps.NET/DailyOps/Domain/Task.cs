@@ -10,24 +10,32 @@ namespace DailyOps.Domain
     public class Task : AggregateBase
     {
         private string title;
-        private TaskType type;
+        private Reccurence interval;
         private Guid planId;
-
-        public Task(Guid id, Guid planId, string title)
-            : base(id)
-        {
-            AcceptChange(new TaskCreated(id, planId, title));
-        }
+        private string lastCompletion;
 
         public Task(Guid id) : base(id)
         {
         }
 
+        public Task(Guid id, Guid planId, string title, Reccurence taskType)
+            : base(id)
+        {
+            AcceptChange(new TaskCreated(id, planId, title, taskType));
+        }
+
+
+        private void Apply(TaskCreated e)
+        {
+            this.Id = e.Id;
+            this.planId = e.PlanId;
+            this.title = e.Title;
+            this.interval = e.Interval;
+        }
 
         internal void ChangeTitle(string title)
         {
-            if (this.title != null
-                && this.title == title)
+            if (this.title != null && this.title == title)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("No need to change the name...");
@@ -39,17 +47,20 @@ namespace DailyOps.Domain
         }
 
 
-        private void Apply(TaskCreated e)
-        {
-            this.Id = e.Id;
-            this.planId = e.PlanId;
-            this.title = e.Title;
-        }
-
         private void Apply(TaskRenamed e)
         {
             this.title = e.Title;
         }
 
+
+        public void MarkCompleted(string user, DateTimeOffset timestamp)
+        {
+            AcceptChange(new TaskMarkedCompleted(this.Id, user, timestamp.ToString()));
+        }
+
+        private void Apply(TaskMarkedCompleted e)
+        {
+            this.lastCompletion = e.Timestamp;
+        }
     }
 }

@@ -25,7 +25,9 @@ namespace DailyOps.Web.Controllers
         [HttpGet, ActionName("plans")]
         public ActionResult Plans()
         {
-            List<PlanDto> list = (List<PlanDto>)Wiring.Proxy.Plans.ForCurrentUser(Thread.CurrentPrincipal.Identity);
+            IEnumerable<PlanId> planIndex = Wiring.Proxy.Collaborators.PlansForUser(Thread.CurrentPrincipal.Identity);
+
+            List<PlanDto> list = (List<PlanDto>)Wiring.Proxy.Plans.PlansWithId(planIndex);
             
             return new JsonResult()
             {
@@ -36,9 +38,11 @@ namespace DailyOps.Web.Controllers
 
 
         [HttpGet, ActionName("planDetails")]
+        [PlanAuthorizeFilter("planId", "Admin,Collaborator,Auditor")]
         public ActionResult PlanDetails(string planId)
         {
-            List<PlanDto> list = (List<PlanDto>)Wiring.Proxy.Plans.ForCurrentUser(Thread.CurrentPrincipal.Identity);
+            IEnumerable<PlanId> planIndex = Wiring.Proxy.Collaborators.PlansForUser(Thread.CurrentPrincipal.Identity);
+            List<PlanDto> list = (List<PlanDto>)Wiring.Proxy.Plans.PlansWithId(planIndex);
 
             PlanDto pl = list.Where(p => p.PlanId.ToString() == planId).First();
 
@@ -100,7 +104,7 @@ namespace DailyOps.Web.Controllers
             var planId = new PlanId(plan);
             var taskId = new TaskId();
 
-            var command = new CreateTask(planId, taskId, taskTitle, TaskType.Daily);
+            var command = new CreateTask(planId, taskId, taskTitle, Reccurence.Daily);
 
             Wiring.Proxy.SendCommand(command);
 

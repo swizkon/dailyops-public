@@ -26,7 +26,6 @@ namespace DailyOps.Wiring
         {
             var b = new Switchboard();
 
-
             //
             // Personal plan
             b.RegisterHandler<CreatePersonalPlan>((c) =>
@@ -103,21 +102,26 @@ namespace DailyOps.Wiring
 
 
             //
-            // Task
+            // Task creation
             b.RegisterHandler<CreateTask>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Task>();
-                var task = new Task(c.TaskId, c.PlanId, c.Name);
+                var task = new Task(c.TaskId, c.PlanId, c.Name, c.Interval);
                 repository.Save(task);
             });
 
             b.RegisterSubscriber<TaskCreated>((c) =>
             {
+                var plan = FindById<Plans, PlanDto>(c.PlanId);
+                var planName = (plan != null) ? plan.Name : "Undefined plan";
                 Persist<Tasks, TaskDto>(new TaskDto
                 {
                     PlanId = c.PlanId,
-                    Title = c.Title,
-                    TaskId = c.Id
+                    TaskTitle = c.Title,
+                    TaskId = c.Id,
+                    Reccurence = c.Interval.ToString(),
+                    Description = "",
+                    PlanName = planName
                 });
 
                 // Add number of tasks
@@ -129,6 +133,50 @@ namespace DailyOps.Wiring
                     }
                 );
             });
+
+
+
+
+            //
+            // Task creation
+            b.RegisterHandler<MarkTaskCompleted>((c) =>
+            {
+                var repository = new RepositoryFactory(bus, container).Build<Task>();
+                var task = repository.GetById(c.TaskId);
+                task.MarkCompleted(c.CompletedBy, c.Timestamp);
+                repository.Save(task);
+            });
+
+            b.RegisterSubscriber<TaskMarkedCompleted>((c) =>
+            {
+                var task = FindById<Tasks, TaskDto>(c.Id);
+                var planId = (task != null) ? task.PlanId : Guid.Empty;
+
+                Persist<Tasks, CompletedTaskDto>(new CompletedTaskDto
+                {
+                     CompletedBy = c.User,
+                     LastCompleted = c.Timestamp,
+                     PlanId = planId, 
+                     TaskId = c.Id
+                });
+                /*
+                */
+
+                // Add number of tasks
+                // REVISIT This might nde to be an scalar query.
+                Mutate<Tasks, TaskDto>(c.Id,
+                    (dto) =>
+                    {
+                        if (dto.LastCompletion == null
+                            || DateTimeOffset.Parse(dto.LastCompletion) < DateTimeOffset.Parse(c.Timestamp))
+                        {
+                            dto.LastCompletion = c.Timestamp;
+                        }
+                    }
+                );
+            });
+
+
 
 
             b.RegisterHandler<AddCollaborator>((c) =>
@@ -198,6 +246,13 @@ namespace DailyOps.Wiring
         }
 
         
+        /// <summary>
+        /// Finds a model
+        /// </summary>
+        /// <typeparam name="TRepository"></typeparam>
+        /// <typeparam name="TDto"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="mutator"></param>
         private static void Mutate<TRepository, TDto>(object id, Action<TDto> mutator)
             where TRepository : ReadModel
             where TDto : class 
@@ -206,6 +261,14 @@ namespace DailyOps.Wiring
             TDto dto = repo.FindById<TDto>(id);
             mutator(dto);
             repo.Put(dto);
+        }
+
+        private static TDto FindById<TRepository, TDto>(object id)
+            where TRepository : ReadModel
+            where TDto : class
+        {
+            var repo = container.GetInstance<TRepository>();
+            return repo.FindById<TDto>(id);
         }
 
 

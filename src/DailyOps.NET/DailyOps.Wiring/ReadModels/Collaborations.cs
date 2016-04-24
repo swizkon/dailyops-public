@@ -1,4 +1,5 @@
-﻿using NHibernate.Mapping.ByCode.Conformist;
+﻿using DailyOps.Domain;
+using NHibernate.Mapping.ByCode.Conformist;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,34 +23,27 @@ namespace DailyOps.Wiring.ReadModels
         {
             return base.Query<CollaboratorDto>((session) =>
             {
-                return session.QueryOver<CollaboratorDto>().Where(t => t.PlanId == planId).List();
+                return session
+                    .QueryOver<CollaboratorDto>()
+                    .Where(t => t.PlanId == planId)
+                    .List();
             });
+
         }
 
-        /*
-        internal void Put(CollaboratorDto collaboratorDto)
-        {
-            base.Transaction((session) =>
-            {
-                session.SaveOrUpdate(collaboratorDto);
-            });
-        }
-        */
 
-        public IEnumerable<Guid> AvailablePlansForUser(IPrincipal principal)
+        public IEnumerable<PlanId> PlansForUser(IIdentity identity)
         {
-            return base.Query<CollaboratorDto>((session) =>
+            return base.Query<Guid>((session) =>
             {
-                return session.QueryOver<CollaboratorDto>().Where(t => t.Username == principal.Identity.Name).List();
+                return session.QueryOver<CollaboratorDto>()
+                    .Select(c => c.PlanId)
+                    .Where(t => t.Username == identity.Name)
+                    .List<Guid>();
             })
+            .Distinct()
             .ToList()
-            .ConvertAll<Guid>(
-                c =>
-                {
-                    return c.PlanId;
-                }
-                )
-                .Distinct();
+            .ConvertAll<PlanId>(id => new PlanId(id));
         }
     }
 

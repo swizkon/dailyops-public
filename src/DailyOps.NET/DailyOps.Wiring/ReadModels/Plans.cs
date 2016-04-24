@@ -1,4 +1,6 @@
-﻿using NHibernate.Mapping.ByCode.Conformist;
+﻿using DailyOps.Domain;
+using NHibernate.Criterion;
+using NHibernate.Mapping.ByCode.Conformist;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,12 +19,23 @@ namespace DailyOps.Wiring.ReadModels
 
         }
 
-        public IEnumerable<PlanDto> ForCurrentUser(IIdentity identity)
+        public IEnumerable<PlanDto> PlansWithId(IEnumerable<PlanId> collection)
         {
+            List<Guid> l = new List<PlanId>(collection)
+                            .ConvertAll<Guid>(
+                                new Converter<PlanId, Guid>(PLanIdToGuid));
+
             return base.Query<PlanDto>((session) =>
             {
-                return session.QueryOver<PlanDto>().List();
+                return session.QueryOver<PlanDto>()
+                    .Where(Restrictions.In("PlanId", l))
+                    .List();
             });
+        }
+
+        static Guid PLanIdToGuid(PlanId planId)
+        {
+            return (Guid)planId; // Point(((int)pf.X), ((int)pf.Y));
         }
     }
 
