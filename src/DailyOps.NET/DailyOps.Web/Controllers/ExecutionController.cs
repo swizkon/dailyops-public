@@ -118,5 +118,26 @@ namespace DailyOps.Web.Controllers
 
         }
 
+
+        [HttpDelete, ActionName("completedTasks")]
+        [TaskAuthorizationFilter("task", "Admin,Collaborator")]
+        public ActionResult HandleRevokeTask(
+            [System.Web.Http.FromBody] Guid task,
+            [System.Web.Http.FromBody] int version)
+        {
+
+            TaskId taskId = new TaskId(task);
+            var command = new RevokeTaskCompletion(taskId, User.Identity.Name, version);
+
+            Wiring.Proxy.SendCommand(command);
+
+            return new JsonResult()
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                Data = command
+            };
+
+        }
+
     }
 }

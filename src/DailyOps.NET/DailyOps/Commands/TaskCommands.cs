@@ -28,16 +28,30 @@ namespace DailyOps.Commands
 
     public class MarkTaskCompleted : Command
     {
-        public readonly DateTimeOffset Timestamp;
         public readonly Guid TaskId;
+        public readonly string Timestamp;
         public readonly string CompletedBy;
 
         public MarkTaskCompleted(TaskId taskId, string completedBy, DateTimeOffset timestamp)
         {
             TaskId = (Guid)taskId;
             CompletedBy = completedBy;
-            Timestamp = timestamp;
+            Timestamp = timestamp.ToString();
         }
     }
 
+
+    public class RevokeTaskCompletion : Command
+    {
+        public readonly int CompletionTimestamp;
+        public readonly Guid TaskId;
+        public readonly string RevokedBy;
+
+        public RevokeTaskCompletion(TaskId taskId, string revokedBy, int completionTimestamp)
+        {
+            TaskId = (Guid)taskId;
+            RevokedBy = revokedBy;
+            CompletionTimestamp = completionTimestamp;
+        }
+    }
 }

@@ -17,8 +17,14 @@
         self.completedToday = [];
 
         self.markCompleted = function (task) {
+            var browserDate = new Date();
             $.post('/execution/completedTasks',
-                { 'task': task.TaskId, 'localTimestamp': new Date() },
+                {
+                    'task': task.TaskId,
+                    'ts': browserDate.toString(),
+                    'localTimestamp': browserDate.toISOString(),
+                    'timeOffset': browserDate.getTimezoneOffset()
+                },
                 function (data) {
                 // self.remainingToday = data;
                 // self.completedTasks(self.completedToday);

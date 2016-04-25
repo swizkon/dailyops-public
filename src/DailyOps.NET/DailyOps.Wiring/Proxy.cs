@@ -143,7 +143,7 @@ namespace DailyOps.Wiring
             {
                 var repository = new RepositoryFactory(bus, container).Build<Task>();
                 var task = repository.GetById(c.TaskId);
-                task.MarkCompleted(c.CompletedBy, c.Timestamp);
+                task.MarkCompleted(c.CompletedBy, DateTimeOffset.Parse(c.Timestamp));
                 repository.Save(task);
             });
 
@@ -159,8 +159,6 @@ namespace DailyOps.Wiring
                      PlanId = planId, 
                      TaskId = c.Id
                 });
-                /*
-                */
 
                 // Add number of tasks
                 // REVISIT This might nde to be an scalar query.
