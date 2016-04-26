@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DailyOps.Domain
 {
     public sealed class PlanId
     {
-        private Guid id;
+        private readonly Guid id;
 
         public PlanId()
             : this(Guid.NewGuid())

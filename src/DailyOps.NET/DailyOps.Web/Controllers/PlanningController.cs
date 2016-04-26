@@ -38,20 +38,21 @@ namespace DailyOps.Web.Controllers
 
 
         [HttpGet, ActionName("planDetails")]
-        [PlanAuthorizeFilter("planId", "Admin,Collaborator,Auditor")]
+        [PlanAuthorizeFilter("planId", "Owner,Admin,Collaborator,Auditor")]
         public ActionResult PlanDetails(string planId)
         {
             IEnumerable<PlanId> planIndex = Wiring.Proxy.Collaborators.PlansForUser(Thread.CurrentPrincipal.Identity);
             List<PlanDto> list = (List<PlanDto>)Wiring.Proxy.Plans.PlansWithId(planIndex);
 
-            PlanDto pl = list.Where(p => p.PlanId.ToString() == planId).First();
+            PlanDto pl = list.First(p => p.PlanId.ToString() == planId);
 
-            var result = new {
+            var result = new
+            {
                 plan = pl,
                 tasks = Wiring.Proxy.Tasks.TaskInPlan(pl.PlanId),
                 collaborators = Wiring.Proxy.Collaborators.ByPlanId(pl.PlanId)
             };
-            
+
             return new JsonResult()
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
@@ -66,8 +67,8 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] string planDescription = "",
             [System.Web.Http.FromBody] PlanType plantype = PlanType.Personal)
         {
-            if (String.IsNullOrEmpty(planName))
-                throw new ArgumentNullException("planName");
+            if (string.IsNullOrEmpty(planName))
+                throw new ArgumentNullException(nameof(planName));
 
             var planId = new PlanId();
 
@@ -93,13 +94,13 @@ namespace DailyOps.Web.Controllers
 
 
         [HttpPost, ActionName("tasks")]
-        [PlanAuthorizeFilter("plan", "Admin,Collaborator")]
+        [PlanAuthorizeFilter("plan", "Owner,Admin,Collaborator")]
         public ActionResult HandleCreateTask(
             [System.Web.Http.FromBody] Guid plan, 
             [System.Web.Http.FromBody] string taskTitle)
         {
-            if (String.IsNullOrEmpty(taskTitle))
-                throw new ArgumentNullException("taskTitle");
+            if (string.IsNullOrEmpty(taskTitle))
+                throw new ArgumentNullException(nameof(taskTitle));
 
             var planId = new PlanId(plan);
             var taskId = new TaskId();

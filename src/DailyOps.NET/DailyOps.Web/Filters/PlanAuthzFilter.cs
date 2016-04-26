@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using FakeItEasy.ExtensionSyntax;
 
 namespace DailyOps.Web.Filters
 {
@@ -20,8 +21,8 @@ namespace DailyOps.Web.Filters
 
         public PlanAuthorizeFilterAttribute(string paramName, string allowedRoles)
         {
-            this.ParamName = paramName;
-            this.AllowedRoles = allowedRoles.Split(',');
+            ParamName = paramName;
+            AllowedRoles = allowedRoles.ToLower().Split(',');
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -29,32 +30,37 @@ namespace DailyOps.Web.Filters
             base.OnActionExecuting(filterContext);
 
             // Try cast the value...
-            var planIdValue = filterContext.ActionParameters[this.ParamName];
+            var planIdValue = filterContext.ActionParameters[ParamName];
 
             // REVISIT Possible double convertion
-            PlanId planid = new PlanId(new Guid(planIdValue.ToString()));
+            var planid = new PlanId(new Guid(planIdValue.ToString()));
 
 
 
-            Converter<string, string> conv = (a) => { return a.ToLower(); };
-            List<string> allowedRoles = new List<string>( Array.ConvertAll<string, string>(this.AllowedRoles, conv));
+            Converter<string, string> conv = (a) => a.ToLower();
+            var allowedRoles = new List<string>(Array.ConvertAll<string, string>(AllowedRoles, conv));
 
             // Get the roles for the current user...
             var collaboratorsInPlan = Wiring.Proxy.Collaborators.ByPlanId((Guid)planid);
 
-            // Match against current user.
-            bool userIsInRole = collaboratorsInPlan.Count(c =>
-                {
-                    return (c.Username == filterContext.HttpContext.User.Identity.Name
-                        || c.DisplayName == filterContext.HttpContext.User.Identity.Name.Replace("(guest)",""))
-                        && allowedRoles.Contains(c.Role.ToLower());
-                }) > 0;
+            var currentUserRoles =
+                collaboratorsInPlan
+                    .Where(c => c.Username.StartsWith(filterContext.HttpContext.User.Identity.Name))
+                    .ToList()
+                    .ConvertAll<string>(r => r.Role.ToLower());
+
+            // Match against current user..start
+            var userIsInRole = currentUserRoles.Intersect(allowedRoles).Any();
 
             if (!userIsInRole)
             {
+                // Find the roles
+
                 filterContext.Result = new HttpStatusCodeResult(
-                                            HttpStatusCode.BadRequest,
-                                            "The operation requires any of the following roles: " + String.Join(",", this.AllowedRoles));
+                    HttpStatusCode.BadRequest,
+                    string.Format("The operation requires any of the following roles: {0}. The user has roles: {1}",
+                        string.Join(",", allowedRoles),
+                        string.Join(",", currentUserRoles)));
             }
         }
 
