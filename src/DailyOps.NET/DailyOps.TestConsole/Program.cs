@@ -96,23 +96,26 @@ namespace DailyOps.TestConsole
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jenny(guest)", "Collaborator"));
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "desmond(guest)", "Auditor"));
 
-            foreach (string taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på onsdag),Packa gympakläder läsläxa(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
+            foreach (string taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på onsdag),Packa gympakläder(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
             {
                 Console.WriteLine(taskTitle);
+
+                var reccurence = (taskTitle.Contains("Varje vecka"))
+                                ? Reccurence.Weekly 
+                                : Reccurence.Daily;
+
                 TaskId taskId = new TaskId();
-                var taskCommand = new CreateTask(planId, taskId, taskTitle, Reccurence.Daily);
-
+                var taskCommand = new CreateTask(planId, taskId, taskTitle, reccurence);
                 Wiring.Proxy.SendCommand(taskCommand);
-                Thread.Sleep(200); // Power nap to allow col down...
+                Thread.Sleep(200); // Power nap to allow cool down...
 
-
-
-                var complete = new MarkTaskCompleted(taskId, "jonas(guest)", DateTimeOffset.Now );
-
+                var complete = new MarkTaskCompleted(taskId, "jonas(guest)", DateTimeOffset.Now);
                 Wiring.Proxy.SendCommand(complete);
-                Thread.Sleep(200); // Power nap to allow col down...
+                Thread.Sleep(200); // Power nap to allow cool down...
 
                 // Check for day names in the culture, 
+
+
 
                 // Check if we can generate and reccurence policy, ie "Every week on Tuesdays" => "Every [interval] on [dayName]"
 

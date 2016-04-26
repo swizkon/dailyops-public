@@ -99,7 +99,7 @@ namespace DailyOps.Wiring.ReadModels
         }
 
 
-        internal void Put<TDto>(TDto dto) where TDto : class
+        internal void Put<TModel>(TModel dto) where TModel : class
         {
             Transaction((session) =>
             {

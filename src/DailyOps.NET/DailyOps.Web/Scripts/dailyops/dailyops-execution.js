@@ -26,9 +26,7 @@
                     'timeOffset': browserDate.getTimezoneOffset()
                 },
                 function (data) {
-                // self.remainingToday = data;
-                // self.completedTasks(self.completedToday);
-                // self.remainingTasks(self.remainingToday);
+                    // Here we could do some back ground update the local storage...
                 }
             );
             // console.log(task);
@@ -41,7 +39,18 @@
         };
 
         self.revokeCompleted = function (task) {
-            // console.log(task);
+            var browserDate = new Date();
+            $.post('/execution/revokedTasks',
+                {
+                    'task': task.TaskId,
+                    'timestamp': browserDate.toString(),
+                    'isoTimestamp': browserDate.toISOString(),
+                    'timeOffset': browserDate.getTimezoneOffset() / 60
+                },
+                function (data) {
+                    // Here we could do some back ground update the local storage...
+                }
+            );
             self.completedToday = self.completedToday.filter(function (t) {
                 return t.TaskId !== task.TaskId;
             });

@@ -14,6 +14,8 @@ namespace DailyOps.Domain
         private Guid planId;
         private string lastCompletion;
 
+        private ReccurencePolicy reccurencePolicy;
+
         public Task(Guid id) : base(id)
         {
         }

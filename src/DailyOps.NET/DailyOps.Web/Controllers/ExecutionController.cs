@@ -119,7 +119,7 @@ namespace DailyOps.Web.Controllers
         }
 
 
-        [HttpDelete, ActionName("completedTasks")]
+        [HttpPost, ActionName("revokedTasks")]
         [TaskAuthorizationFilter("task", "Admin,Collaborator")]
         public ActionResult HandleRevokeTask(
             [System.Web.Http.FromBody] Guid task,
