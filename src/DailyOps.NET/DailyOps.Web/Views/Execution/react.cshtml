@@ -1,0 +1,25 @@
+﻿
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="container"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@Scripts.Render("~/bundles/react")
+<script src="~/Scripts/react/browser.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha256-min.js"></script>
+
+
+
+@section scripts
+{
+<script src="~/Scripts/dailyops/dailyops-events.js"></script>
+<script type="text/babel" src="~/Scripts/dailyops/dailyops-react.js"></script>
+}

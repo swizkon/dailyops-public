@@ -24,7 +24,6 @@ namespace DailyOps.TestConsole
             Wiring.Proxy.GenerateSchemaToFile(schemaFile);
             Wiring.Proxy.CreateReadModelDB();
 
-
             generatePlans();
             // Console.ReadKey();
 
@@ -41,8 +40,6 @@ namespace DailyOps.TestConsole
 
         static void generateAcmePlan()
         {
-
-
             PlanId planId = new PlanId();
             var newPLan = new CreateCollaborativePlan(planId, "ACME plan", "Description goes here...", "BigBoss(guest)");
 
@@ -96,7 +93,7 @@ namespace DailyOps.TestConsole
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jenny(guest)", "Collaborator"));
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "desmond(guest)", "Auditor"));
 
-            foreach (string taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på onsdag),Packa gympakläder(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
+            foreach (string taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på Onsdag),Packa gympakläder(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
             {
                 Console.WriteLine(taskTitle);
 

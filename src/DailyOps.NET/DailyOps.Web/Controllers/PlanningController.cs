@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 
 namespace DailyOps.Web.Controllers
@@ -25,7 +24,7 @@ namespace DailyOps.Web.Controllers
         [HttpGet, ActionName("plans")]
         public ActionResult Plans()
         {
-            IEnumerable<PlanId> planIndex = Wiring.Proxy.Collaborators.PlansForUser(Thread.CurrentPrincipal.Identity);
+            var planIndex = Wiring.Proxy.Collaborators.PlansForUser(Thread.CurrentPrincipal.Identity);
 
             List<PlanDto> list = (List<PlanDto>)Wiring.Proxy.Plans.PlansWithId(planIndex);
             
@@ -68,17 +67,17 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] PlanType plantype = PlanType.Personal)
         {
             if (string.IsNullOrEmpty(planName))
-                throw new ArgumentNullException(nameof(planName));
+                throw new ArgumentNullException("planName");
 
             var planId = new PlanId();
 
             
 
             var command = (plantype == PlanType.Collaborative)
-                ? (Command)new CreateCollaborativePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
+                ? new CreateCollaborativePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
                 : (plantype == PlanType.Personal)
-                    ? (Command)new CreatePersonalPlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
-                    : (Command)new CreateDistributablePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name);
+                    ? new CreatePersonalPlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
+                    : new CreateDistributablePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name) as Command;
 
             // = new CreateSharedPlan(planId, planName, Thread.CurrentPrincipal.Identity.Name);
 
@@ -100,7 +99,7 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] string taskTitle)
         {
             if (string.IsNullOrEmpty(taskTitle))
-                throw new ArgumentNullException(nameof(taskTitle));
+                throw new ArgumentNullException("taskTitle");
 
             var planId = new PlanId(plan);
             var taskId = new TaskId();

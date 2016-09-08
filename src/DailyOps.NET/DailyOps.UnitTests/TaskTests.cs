@@ -10,12 +10,12 @@ namespace DailyOps.UnitTests
     [TestClass]
     public class TaskTests
     {
-        Bus bus;
-        PlanId planId;
-        TaskId taskId;
+        readonly Bus bus;
+        readonly PlanId planId;
+        readonly TaskId taskId;
 
 
-        Task task;
+        private Task task;
 
         public TaskTests()
         {
@@ -33,7 +33,7 @@ namespace DailyOps.UnitTests
         [TestMethod]
         public void Expect_daily_task_to_be_daily()
         {
-            CreateTask createTask = new CreateTask(planId, taskId, "Create unit tests", Reccurence.Daily);
+            var createTask = new CreateTask(planId, taskId, "Create unit tests", Reccurence.Daily);
             bus.Send(createTask);
             Assert.AreEqual(((Guid)taskId).ToString(), task.AggregateId.ToString());
         }

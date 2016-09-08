@@ -1,9 +1,6 @@
 ﻿using DailyOps.Events;
 using Nuclear.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DailyOps.Domain
 {
@@ -29,10 +26,10 @@ namespace DailyOps.Domain
 
         private void Apply(TaskCreated e)
         {
-            this.Id = e.Id;
-            this.planId = e.PlanId;
-            this.title = e.Title;
-            this.interval = e.Interval;
+            Id = e.Id;
+            planId = e.PlanId;
+            title = e.Title;
+            interval = e.Interval;
         }
 
         internal void ChangeTitle(string title)
@@ -45,24 +42,34 @@ namespace DailyOps.Domain
                 return;
             }
 
-            AcceptChange(new TaskRenamed(this.Id, title));
+            AcceptChange(new TaskRenamed(Id, title));
         }
 
 
         private void Apply(TaskRenamed e)
         {
-            this.title = e.Title;
+            title = e.Title;
         }
 
 
         public void MarkCompleted(string user, DateTimeOffset timestamp)
         {
-            AcceptChange(new TaskMarkedCompleted(this.Id, user, timestamp.ToString()));
+            AcceptChange(new TaskMarkedCompleted(Id, user, timestamp.ToString()));
         }
 
         private void Apply(TaskMarkedCompleted e)
         {
-            this.lastCompletion = e.Timestamp;
+            lastCompletion = e.Timestamp;
+        }
+
+        public void RevokeCompletion(string user, DateTimeOffset timestamp)
+        {
+            AcceptChange(new TaskCompletionRevoked(Id, user, timestamp.ToString()));
+        }
+
+        private void Apply(TaskCompletionRevoked e)
+        {
+            lastCompletion = e.Timestamp;
         }
     }
 }

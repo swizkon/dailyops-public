@@ -175,6 +175,16 @@ namespace DailyOps.Wiring
             });
 
 
+            //
+            // Task creation
+            b.RegisterHandler<RevokeTaskCompletion>((c) =>
+            {
+                var repository = new RepositoryFactory(bus, container).Build<Task>();
+                var task = repository.GetById(c.TaskId);
+                task.RevokeCompletion(c.RevokedBy, DateTimeOffset.Parse(c.RevocationTimestamp));
+                repository.Save(task);
+            });
+
 
 
             b.RegisterHandler<AddCollaborator>((c) =>

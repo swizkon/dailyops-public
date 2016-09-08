@@ -21,9 +21,15 @@ namespace DailyOps.Wiring.ReadModels
 
         public IEnumerable<PlanDto> PlansWithId(IEnumerable<PlanId> collection)
         {
-            List<Guid> l = new List<PlanId>(collection)
-                            .ConvertAll<Guid>(
-                                new Converter<PlanId, Guid>(PLanIdToGuid));
+            //List<Guid> l = new List<PlanId>(collection)
+            //    .ConvertAll(PLanIdToGuid);
+
+            List<Guid> l = collection
+                            .ToList()
+                            .ConvertAll(PLanIdToGuid);
+
+            //                .ConvertAll(
+             //                   new Converter<PlanId, Guid>(PLanIdToGuid));
 
             return base.Query<PlanDto>((session) =>
             {
@@ -35,7 +41,8 @@ namespace DailyOps.Wiring.ReadModels
 
         static Guid PLanIdToGuid(PlanId planId)
         {
-            return (Guid)planId; // Point(((int)pf.X), ((int)pf.Y));
+            return (Guid)planId;
+            // Point(((int)pf.X), ((int)pf.Y));
         }
     }
 

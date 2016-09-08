@@ -1,14 +1,15 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DailyOps.Domain;
+using System.Collections.Generic;
+using Nuclear.Messaging;
 
 namespace DailyOps.UnitTests
 {
     [TestClass]
     public class PlanTests
     {
-
-        Plan plan;
+        readonly Plan plan;
 
         public PlanTests()
         {
@@ -19,6 +20,8 @@ namespace DailyOps.UnitTests
         public void A_owner_should_be_assignable()
         {
             this.plan.AssignOwnership("jonas");
+
+            // plan.ReconstituteFromHistory(IEnumerable<Event> events);
 
             // Assert.AreEqual()
         }

@@ -9,6 +9,8 @@ namespace DailyOps.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/react").Include(
+                        "~/Scripts/jquery-{version}.js",
+                        "~/Scripts/react/browser.min.js",
                         "~/Scripts/react/react.js",
                         "~/Scripts/react/react-dom.js"));
 

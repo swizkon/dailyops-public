@@ -1,12 +1,9 @@
 ﻿using DailyOps.Domain;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using FakeItEasy.ExtensionSyntax;
 
 namespace DailyOps.Web.Filters
 {
@@ -34,11 +31,9 @@ namespace DailyOps.Web.Filters
 
             // REVISIT Possible double convertion
             var planid = new PlanId(new Guid(planIdValue.ToString()));
-
-
-
-            Converter<string, string> conv = (a) => a.ToLower();
-            var allowedRoles = new List<string>(Array.ConvertAll<string, string>(AllowedRoles, conv));
+            
+            var allowedRoles = new List<string>(AllowedRoles)
+                                    .ConvertAll(r => r.ToLower());
 
             // Get the roles for the current user...
             var collaboratorsInPlan = Wiring.Proxy.Collaborators.ByPlanId((Guid)planid);
@@ -47,7 +42,7 @@ namespace DailyOps.Web.Filters
                 collaboratorsInPlan
                     .Where(c => c.Username.StartsWith(filterContext.HttpContext.User.Identity.Name))
                     .ToList()
-                    .ConvertAll<string>(r => r.Role.ToLower());
+                    .ConvertAll(r => r.Role.ToLower());
 
             // Match against current user..start
             var userIsInRole = currentUserRoles.Intersect(allowedRoles).Any();

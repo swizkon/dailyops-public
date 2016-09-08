@@ -18,6 +18,11 @@ namespace DailyOps.Web.Controllers
             return View();
         }
 
+        public ActionResult React()
+        {
+            return View();
+        }
+
         [HttpGet, ActionName("allTasks")]
         public ActionResult AllTasks()
         {
@@ -46,28 +51,6 @@ namespace DailyOps.Web.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 Data = mostRecentCompletions
             };
-            /*
-            // ICollection<CompletedTaskDto> 
-            var list = new List<CompletedTaskDto>(10);
-            for (int i = 0; i < 13; i++)
-            {
-                list.Add(
-                    new CompletedTaskDto {
-                         CompletedBy = "jonas", 
-                         LastCompleted = DateTime.Now.ToString(), 
-                         PlanId = Guid.NewGuid(),
-                         TaskId = Guid.NewGuid(), 
-                         Title = "COmpleted task #" + i
-                    });
-            }
-
-            var result = new JsonResult()
-            {
-                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                 Data = list
-            };
-            return result;
-            */
         }
 
 
@@ -110,12 +93,7 @@ namespace DailyOps.Web.Controllers
 
             Wiring.Proxy.SendCommand(command);
 
-            return new JsonResult()
-            {
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = command
-            };
-
+            return CommandWrapped(command);
         }
 
 
@@ -123,20 +101,22 @@ namespace DailyOps.Web.Controllers
         [TaskAuthorizationFilter("task", "Admin,Collaborator")]
         public ActionResult HandleRevokeTask(
             [System.Web.Http.FromBody] Guid task,
-            [System.Web.Http.FromBody] int version)
+            [System.Web.Http.FromBody] string revocationTimestamp = "")
         {
-
             TaskId taskId = new TaskId(task);
-            var command = new RevokeTaskCompletion(taskId, User.Identity.Name, version);
+            var command = new RevokeTaskCompletion(taskId, User.Identity.Name, revocationTimestamp);
 
             Wiring.Proxy.SendCommand(command);
+            return CommandWrapped(command);
+        }
 
+        private JsonResult CommandWrapped(Nuclear.Messaging.Command command)
+        {
             return new JsonResult()
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 Data = command
             };
-
         }
 
     }

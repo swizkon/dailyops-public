@@ -49,6 +49,19 @@ namespace DailyOps.Events
             User = user;
             Timestamp = timestamp;
         }
+    }
 
+    public class TaskCompletionRevoked : DomainEvent
+    {
+        public readonly Guid Id;
+        public readonly string User;
+        public readonly string Timestamp;
+
+        public TaskCompletionRevoked(Guid id, string user, string timestamp)
+        {
+            Id = id;
+            User = user;
+            Timestamp = timestamp;
+        }
     }
 }

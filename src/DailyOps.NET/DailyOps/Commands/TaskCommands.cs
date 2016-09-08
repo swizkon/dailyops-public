@@ -43,15 +43,15 @@ namespace DailyOps.Commands
 
     public class RevokeTaskCompletion : Command
     {
-        public readonly int CompletionTimestamp;
+        public readonly string RevocationTimestamp;
         public readonly Guid TaskId;
         public readonly string RevokedBy;
 
-        public RevokeTaskCompletion(TaskId taskId, string revokedBy, int completionTimestamp)
+        public RevokeTaskCompletion(TaskId taskId, string revokedBy, string revocationTimestamp)
         {
             TaskId = (Guid)taskId;
             RevokedBy = revokedBy;
-            CompletionTimestamp = completionTimestamp;
+            RevocationTimestamp = revocationTimestamp;
         }
     }
 }

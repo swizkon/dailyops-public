@@ -23,7 +23,8 @@
                     'task': task.TaskId,
                     'ts': browserDate.toString(),
                     'localTimestamp': browserDate.toISOString(),
-                    'timeOffset': browserDate.getTimezoneOffset()
+                    'minutesOffset': browserDate.getTimezoneOffset(),
+                    'locale': browserDate.toLocaleString()
                 },
                 function (data) {
                     // Here we could do some back ground update the local storage...
@@ -43,9 +44,9 @@
             $.post('/execution/revokedTasks',
                 {
                     'task': task.TaskId,
-                    'timestamp': browserDate.toString(),
+                    'timestamp': browserDate.toString(),    
                     'isoTimestamp': browserDate.toISOString(),
-                    'timeOffset': browserDate.getTimezoneOffset() / 60
+                    'minutesOffset': browserDate.getTimezoneOffset()
                 },
                 function (data) {
                     // Here we could do some back ground update the local storage...
@@ -68,7 +69,6 @@
                 self.completedTasks(self.completedToday);
                 self.remainingTasks(self.remainingToday);
             });
-            // self.allTasks = ;
         };
 
         self.remainingTasks = ko.observable();

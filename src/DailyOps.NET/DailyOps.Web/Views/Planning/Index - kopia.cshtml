@@ -1,0 +1,55 @@
+﻿
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Knockout da test</h1>
+            <div id="container">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Folders -->
+<ul class="folders" data-bind="foreach: plans">
+    <li data-bind="text: Name,
+               css: { selected: $data == $root.chosenPlanId() },
+               click: $root.goToPlan"></li>
+</ul>
+
+
+<table class="mails" data-bind="with: chosenPlanData">
+    <thead><tr><th>From</th><th>To</th><th>Subject</th><th>Date</th></tr></thead>
+    <tbody data-bind="foreach: mails">
+        <tr>
+            <td data-bind="text: from"></td>
+            <td data-bind="text: to"></td>
+            <td data-bind="text: subject"></td>
+            <td data-bind="text: date"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<hr/>
+
+<form data-bind="submit: createPlan">
+    Create a new plan:<br/>
+    <input  data-bind="value: planName" placeholder="Plan name" />
+    <button type="submit">GO</button>
+</form>
+
+
+
+@section scripts
+{
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sammy.js/0.7.6/sammy.min.js"></script>
+<script src="~/Scripts/knockout-2.2.0.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha256-min.js"></script>
+<script src="~/Scripts/dailyops/dailyops-planning-plans.js">
+</script>
+
+}

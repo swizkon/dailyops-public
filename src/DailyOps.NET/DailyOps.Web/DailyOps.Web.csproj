@@ -219,6 +219,8 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\dailyops\dailyops-events.js" />
+    <Content Include="Scripts\dailyops\dailyops-react.js" />
     <Content Include="Scripts\dailyops\dailyops-planning-plans.js" />
     <Content Include="Scripts\dailyops\dailyops-execution.js" />
     <Content Include="Scripts\dailyops\dailyops-plans.js" />
@@ -276,6 +278,7 @@
     <Content Include="Views\Planning\Index - Copy.cshtml" />
     <Content Include="Views\About\Index.cshtml" />
     <Content Include="Views\Authn\Login.cshtml" />
+    <Content Include="Views\Execution\react.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
