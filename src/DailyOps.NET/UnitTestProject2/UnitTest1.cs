@@ -1,21 +1,6 @@
 ﻿using System;
-// using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 
-/*
-namespace UnitTestProject2
-{
-    [TestClass]
-    public class UnitTest1
-    {
-        [TestMethod]
-        public void TestMethod1()
-        {
-
-        }
-    }
-}
-*/
 
 namespace Bank
 {
@@ -40,6 +25,22 @@ namespace Bank
             Assert.That(250m, Is.EqualTo(destination.Balance));
             Assert.AreEqual(100m, source.Balance);
         }
+
+        [Test]
+        public void When_transfer_ammount_is_greater_than_balance_throw()
+        {
+            // Arrange
+            Account source = new Account();
+            source.Deposit(10m);
+
+            Account destination = new Account();
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Act
+                source.TransferFunds(destination, 100m);
+            });
+        }
     }
 
     internal class Account
@@ -53,6 +54,9 @@ namespace Bank
 
         internal void TransferFunds(Account destination, decimal v)
         {
+            if (Balance < v)
+                throw new InvalidOperationException("The Balance must be greater that the amount to deposit");
+
             Balance -= v;
             destination.Deposit(v);
         }
