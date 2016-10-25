@@ -36,5 +36,16 @@
 
             Assert.AreEqual(timestamp, task.LastCompletion);
         }
+
+        [TestCase("2016-10-25 08:32:40 +02:00", Reccurence.Daily, "2016-10-26 08:00:00 +02:00")]
+        public void When_completing_a_task_It_has_the_correct_next_duedate(string completedTimestamp, Reccurence reccurence, string expectedDueDate)
+        {
+            var timestamp = DateTimeOffset.Parse(completedTimestamp);
+
+            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", reccurence);
+            task.MarkCompleted("jonas", timestamp);
+
+            Assert.AreEqual(timestamp, task.LastCompletion);
+        }
     }
 }
