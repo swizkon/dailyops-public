@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DailyOps.TestConsole
 {
-    public class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
@@ -78,10 +78,8 @@ namespace DailyOps.TestConsole
 
         static void GenerateDesmondPlan()
         {
-
             var days = CultureInfo.CurrentCulture.DateTimeFormat.DayNames; 
-
-
+            
             PlanId planId = new PlanId();
             var newPLan = new CreateCollaborativePlan(planId, "Desmonds åtaganden", "Saker som Desmond ska göra för att få veckopeng", Thread.CurrentPrincipal.Identity.Name);
 
