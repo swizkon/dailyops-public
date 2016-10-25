@@ -14,15 +14,14 @@ namespace DailyOps.DomainTests
         public void PlanTest()
         {
             Plan p = new Plan(Guid.NewGuid());
-            p.AddCollaborator("Jonas", "Admin");
+            p.AddCollaborator("Jonas", CollaboratorRole.Admin);
+            p.AssignOwnership("Jonas");
 
             var switchboard = new Nuclear.Lazy.Switchboard();
 
             var eventstore = new Nuclear.Lazy.InMemEventStore(switchboard);
             eventstore.SaveChanges(p);
 
-            // Assert.True(false, "This test needs an implementation");
-            
         }
     }
 }

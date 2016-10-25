@@ -1,15 +1,21 @@
 ﻿using DailyOps.Events;
 using Nuclear.Domain;
 using System;
+using System.Data;
 
 namespace DailyOps.Domain
 {
+    using System.Collections.Generic;
+
     public class Task : AggregateBase
     {
         private string title;
         private Reccurence interval;
         private Guid planId;
+
         private string lastCompletion;
+
+        private IDictionary<DateTimeOffset, string> completionHistory = new Dictionary<DateTimeOffset, string>();
 
         private ReccurencePolicy reccurencePolicy;
 
@@ -32,9 +38,9 @@ namespace DailyOps.Domain
             interval = e.Interval;
         }
 
-        internal void ChangeTitle(string title)
+        public void ChangeTitle(string newTitle)
         {
-            if (this.title != null && this.title == title)
+            if (this.title != null && this.title == newTitle)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("No need to change the name...");
@@ -42,7 +48,7 @@ namespace DailyOps.Domain
                 return;
             }
 
-            AcceptChange(new TaskRenamed(Id, title));
+            AcceptChange(new TaskRenamed(Id, this.title));
         }
 
 
@@ -70,6 +76,11 @@ namespace DailyOps.Domain
         private void Apply(TaskCompletionRevoked e)
         {
             lastCompletion = e.Timestamp;
+        }
+
+        public string Title()
+        {
+            return this.title;
         }
     }
 }

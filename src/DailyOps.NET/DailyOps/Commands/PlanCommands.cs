@@ -25,8 +25,6 @@ namespace DailyOps.Commands
         }
     }
 
-
-
     public class CreateCollaborativePlan : Command
     {
         public readonly Guid Id;
@@ -36,14 +34,24 @@ namespace DailyOps.Commands
 
         public CreateCollaborativePlan(PlanId id, string name, string description, string owner)
         {
-            
-            Id = (Guid) id;
+            Id = (Guid)id;
             Name = name;
             Description = description;
             Owner = owner;
         }
     }
 
+    public class AssociateTaskToPlan : Command
+    {
+        public readonly Guid PlanId;
+        public readonly Guid TaskId;
+
+        public AssociateTaskToPlan(PlanId planId, TaskId taskId)
+        {
+            PlanId = planId;
+            TaskId = taskId;
+        }
+    }
 
     public class CreateDistributablePlan : Command
     {
@@ -60,25 +68,7 @@ namespace DailyOps.Commands
             Owner = owner;
         }
     }
-
-
-    /*
-    public class CreateCommonPlan : Command
-    {
-        public readonly Guid Id;
-        public readonly string Name;
-        public readonly string Description;
-        public readonly string Owner;
-
-        public CreateCommonPlan(Guid id, string name, string description, string owner)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            Owner = owner;
-        }
-    }
-    */
+    
 
 
     public class RenamePlan : Command

@@ -6,8 +6,7 @@ namespace DailyOps.Domain
     {
         private readonly Guid id;
 
-        public PlanId()
-            : this(Guid.NewGuid())
+        public PlanId() : this(Guid.NewGuid())
         {
         }
 
@@ -21,10 +20,9 @@ namespace DailyOps.Domain
             return new PlanId(id);
         }
 
-        public static explicit operator Guid(PlanId planId)
+        public static implicit operator Guid(PlanId planId)
         {
             return planId.id;
         }
-
     }
 }

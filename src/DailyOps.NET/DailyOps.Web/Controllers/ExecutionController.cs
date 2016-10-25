@@ -87,8 +87,7 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] string localTimestamp)
         {
             DateTimeOffset timestamp = DateTimeOffset.Now;
-            // DateTimeOffset.Parse(localTimestamp);
-            TaskId taskId = new TaskId(task);
+            TaskId taskId = (TaskId) Guid.NewGuid();
             var command = new MarkTaskCompleted(taskId, User.Identity.Name, timestamp);
 
             Wiring.Proxy.SendCommand(command);
@@ -103,7 +102,7 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] Guid task,
             [System.Web.Http.FromBody] string revocationTimestamp = "")
         {
-            TaskId taskId = new TaskId(task);
+            TaskId taskId = (TaskId)Guid.NewGuid();
             var command = new RevokeTaskCompletion(taskId, User.Identity.Name, revocationTimestamp);
 
             Wiring.Proxy.SendCommand(command);

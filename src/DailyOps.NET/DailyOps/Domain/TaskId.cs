@@ -6,16 +6,11 @@ using System.Threading.Tasks;
 
 namespace DailyOps.Domain
 {
-    public sealed class TaskId
+    public sealed class TaskId :IEquatable<TaskId>
     {
-        private Guid id;
+        private readonly Guid id;
 
-        public TaskId()
-            : this(Guid.NewGuid())
-        {
-        }
-
-        public TaskId(Guid id)
+        private TaskId(Guid id)
         {
             this.id = id;
         }
@@ -25,10 +20,14 @@ namespace DailyOps.Domain
             return new TaskId(id);
         }
 
-        public static explicit operator Guid(TaskId taskId)
+        public static implicit operator Guid(TaskId taskId)
         {
             return taskId.id;
         }
 
+        public bool Equals(TaskId other)
+        {
+            return this.id.Equals(other.id);
+        }
     }
 }

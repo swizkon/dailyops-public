@@ -21,7 +21,7 @@ namespace Bank
             // Act
             source.TransferFunds(destination, 100m);
 
-            // Assert
+            // Assert, 
             Assert.That(250m, Is.EqualTo(destination.Balance));
             Assert.AreEqual(100m, source.Balance);
         }
@@ -49,6 +49,7 @@ namespace Bank
             source.Deposit(10m);
 
             Account destination = new Account();
+
 
             Assert.Throws<InvalidOperationException>(() =>
             {

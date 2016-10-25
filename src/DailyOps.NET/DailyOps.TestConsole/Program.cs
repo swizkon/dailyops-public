@@ -32,13 +32,13 @@ namespace DailyOps.TestConsole
 
         static void generatePlans()
         {
-            generateSignePlan();
-            generateDesmondPlan();
+            GenerateSignePlan();
+            GenerateDesmondPlan();
 
-            generateAcmePlan();
+            GenerateAcmePlan();
         }
 
-        static void generateAcmePlan()
+        static void GenerateAcmePlan()
         {
             PlanId planId = new PlanId();
             var newPLan = new CreateCollaborativePlan(planId, "ACME plan", "Description goes here...", "BigBoss(guest)");
@@ -48,7 +48,7 @@ namespace DailyOps.TestConsole
             foreach (string task in "Write executive summary,Tax planning".Split(','))
             {
                 Console.WriteLine(task);
-                TaskId taskId = new TaskId();
+                TaskId taskId = (TaskId) Guid.NewGuid();
                 Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Reccurence.Daily));
                 Thread.Sleep(200);
             }
@@ -56,11 +56,9 @@ namespace DailyOps.TestConsole
         }
 
 
-        static void generateSignePlan()
+        private static void GenerateSignePlan()
         {
-
-
-            PlanId planId = new PlanId();
+            var planId = new PlanId();
             var newPLan = new CreateCollaborativePlan(planId, "Signes behov", "Description goes here...", Thread.CurrentPrincipal.Identity.Name);
 
             Wiring.Proxy.SendCommand(newPLan);
@@ -68,17 +66,17 @@ namespace DailyOps.TestConsole
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jonas(guest)", "Admin"));
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jenny(guest)", "Collaborator"));
 
-            foreach (string task in "D-droppar,Kåvepenin - morgon,Kåvepenin - eftermiddag,Kåvepenin - kväll,Borsta tänderna - morgon,Borsta tänderna - kväll,Kolla naglar".Split(','))
+            foreach (var task in "D-droppar,Kåvepenin - morgon,Kåvepenin - eftermiddag,Kåvepenin - kväll,Borsta tänderna - morgon,Borsta tänderna - kväll,Kolla naglar".Split(','))
             {
                 Console.WriteLine(task);
-                TaskId taskId = new TaskId();
+                var taskId = (TaskId) Guid.NewGuid();
                 Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Reccurence.Daily));
                 Thread.Sleep(200);
             }
 
         }
 
-        static void generateDesmondPlan()
+        static void GenerateDesmondPlan()
         {
 
             var days = CultureInfo.CurrentCulture.DateTimeFormat.DayNames; 
@@ -93,15 +91,16 @@ namespace DailyOps.TestConsole
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "jenny(guest)", "Collaborator"));
             Wiring.Proxy.SendCommand(new AddCollaborator(planId, "desmond(guest)", "Auditor"));
 
-            foreach (string taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på Onsdag),Packa gympakläder(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
+            foreach (var taskTitle in "Städa rummet (Varje vecka),Gå igenom läsläxa(Varje vecka på Onsdag),Packa gympakläder(Varje vecka på Torsdag),Kolla naglar(Varje vecka på Söndag)".Split(','))
             {
                 Console.WriteLine(taskTitle);
 
                 var reccurence = (taskTitle.Contains("Varje vecka"))
                                 ? Reccurence.Weekly 
                                 : Reccurence.Daily;
+                
 
-                TaskId taskId = new TaskId();
+                var taskId = (TaskId) Guid.NewGuid();
                 var taskCommand = new CreateTask(planId, taskId, taskTitle, reccurence);
                 Wiring.Proxy.SendCommand(taskCommand);
                 Thread.Sleep(200); // Power nap to allow cool down...

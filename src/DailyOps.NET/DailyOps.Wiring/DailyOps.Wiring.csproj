@@ -69,12 +69,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadModels\Collaborations.cs" />
     <Compile Include="ReadModels\Plans.cs" />
-    <Compile Include="ReadModels\ReadModel.cs" />
+    <Compile Include="ReadModels\ReadModel.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="ReadModels\ReadModelConnectionString.cs" />
     <Compile Include="ReadModels\Tasks.cs" />
     <Compile Include="RepositoryFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -25,8 +25,7 @@ namespace DailyOps.Wiring
         static Bus ConfigureBus()
         {
             var b = new Switchboard();
-
-            //
+            
             // Personal plan
             b.RegisterHandler<CreatePersonalPlan>((c) =>
             {
@@ -174,8 +173,7 @@ namespace DailyOps.Wiring
                 );
             });
 
-
-            //
+            
             // Task creation
             b.RegisterHandler<RevokeTaskCompletion>((c) =>
             {
@@ -191,7 +189,7 @@ namespace DailyOps.Wiring
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
                 var plan = repository.GetById(c.PlanId);
-                plan.AddCollaborator(c.Collaborator, c.Role);
+                plan.AddCollaborator(c.Collaborator, (CollaboratorRole) Enum.Parse(typeof(CollaboratorRole),c.Role));
                 repository.Save(plan);
             });
 

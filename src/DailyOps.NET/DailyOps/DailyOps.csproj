@@ -45,7 +45,10 @@
   <ItemGroup>
     <Compile Include="Commands\PlanCommands.cs" />
     <Compile Include="Commands\TaskCommands.cs" />
+    <Compile Include="Domain\CollaboratorId.cs" />
+    <Compile Include="Domain\CollaboratorRole.cs" />
     <Compile Include="Domain\Plan.cs" />
+    <Compile Include="Domain\PlanSummary.cs" />
     <Compile Include="Domain\ReccurencePolicy.cs" />
     <Compile Include="Domain\TaskId.cs" />
     <Compile Include="Domain\PlanId.cs" />
@@ -53,11 +56,13 @@
     <Compile Include="Domain\Task.cs" />
     <Compile Include="Domain\Reccurence.cs" />
     <Compile Include="Events\PlanEvents.cs" />
+    <Compile Include="Events\TaskAssociatedToPlan.cs" />
     <Compile Include="Events\TaskEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

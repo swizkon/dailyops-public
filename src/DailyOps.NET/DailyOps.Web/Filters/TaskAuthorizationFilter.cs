@@ -29,12 +29,12 @@ namespace DailyOps.Web.Filters
             var taskIdValue = filterContext.ActionParameters[this.ParamName];
 
             // REVISIT Possible double convertion
-            TaskId taskId = new TaskId(new Guid(taskIdValue.ToString()));
+            var taskId = (TaskId) new Guid(taskIdValue.ToString());
 
-            TaskDto taskModel = Wiring.Proxy.Tasks.TaskWithId(taskId);
+            var taskModel = Wiring.Proxy.Tasks.TaskWithId(taskId);
 
-            Converter<string, string> conv = (a) => { return a.ToLower(); };
-            List<string> allowedRoles = new List<string>( Array.ConvertAll<string, string>(this.AllowedRoles, conv));
+            Converter<string, string> conv = (a) => a.ToLower();
+            var allowedRoles = new List<string>( Array.ConvertAll<string, string>(this.AllowedRoles, conv));
 
             // Get the roles for the current user...
             var collaboratorsInPlan = Wiring.Proxy.Collaborators.ByPlanId(taskModel.PlanId);

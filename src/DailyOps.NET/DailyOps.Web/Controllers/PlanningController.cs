@@ -67,20 +67,15 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] PlanType plantype = PlanType.Personal)
         {
             if (string.IsNullOrEmpty(planName))
-                throw new ArgumentNullException("planName");
+                throw new ArgumentNullException(nameof(planName));
 
             var planId = new PlanId();
-
-            
-
             var command = (plantype == PlanType.Collaborative)
                 ? new CreateCollaborativePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
                 : (plantype == PlanType.Personal)
                     ? new CreatePersonalPlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
                     : new CreateDistributablePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name) as Command;
-
-            // = new CreateSharedPlan(planId, planName, Thread.CurrentPrincipal.Identity.Name);
-
+            
             Wiring.Proxy.SendCommand(command);
 
             return new JsonResult()
@@ -99,10 +94,10 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] string taskTitle)
         {
             if (string.IsNullOrEmpty(taskTitle))
-                throw new ArgumentNullException("taskTitle");
+                throw new ArgumentNullException(nameof(taskTitle));
 
             var planId = new PlanId(plan);
-            var taskId = new TaskId();
+            var taskId = (TaskId)Guid.NewGuid();
 
             var command = new CreateTask(planId, taskId, taskTitle, Reccurence.Daily);
 
@@ -123,11 +118,11 @@ namespace DailyOps.Web.Controllers
             [System.Web.Http.FromBody] string collaboratorUsername,
             [System.Web.Http.FromBody] string collaboratorRole)
         {
-            if (String.IsNullOrEmpty(collaboratorUsername))
-                throw new ArgumentNullException("collaboratorUsername");
+            if (string.IsNullOrEmpty(collaboratorUsername))
+                throw new ArgumentNullException(nameof(collaboratorUsername));
 
-            if (String.IsNullOrEmpty(collaboratorRole))
-                throw new ArgumentNullException("collaboratorRole");
+            if (string.IsNullOrEmpty(collaboratorRole))
+                throw new ArgumentNullException(nameof(collaboratorRole));
 
             
             if (!ModelState.IsValid)
