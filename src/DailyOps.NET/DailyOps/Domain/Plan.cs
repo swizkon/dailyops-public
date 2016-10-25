@@ -100,9 +100,9 @@ namespace DailyOps.Domain
             this.planType = (PlanType) Enum.Parse(typeof(PlanType), planCreated.GetType().Name.Replace("PlanCreated", ""));
         }
 
-        public PlanSummary Summary()
+        public Summary Summary()
         {
-            return new PlanSummary(this.name, this.description, this.planType);
+            return new Summary(this.name, this.description);
         }
     }
 }

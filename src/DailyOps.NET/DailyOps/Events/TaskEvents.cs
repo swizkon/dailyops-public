@@ -42,12 +42,14 @@ namespace DailyOps.Events
         public readonly Guid Id;
         public readonly string User;
         public readonly string Timestamp;
+        private readonly int MinutesOffset;
 
-        public TaskMarkedCompleted(Guid id, string user, string timestamp)
+        public TaskMarkedCompleted(Guid id, string user, string timestamp, int minutesOffset)
         {
             Id = id;
             User = user;
             Timestamp = timestamp;
+            MinutesOffset = minutesOffset;
         }
     }
 

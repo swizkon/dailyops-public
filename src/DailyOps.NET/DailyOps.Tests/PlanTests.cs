@@ -30,7 +30,6 @@
 
             Assert.AreEqual(name, p.Summary().Name);
             Assert.AreEqual(desc, p.Summary().Description);
-            Assert.AreEqual(typeOf, p.Summary().PlanType);
         }
 
 
@@ -73,9 +72,9 @@
         {
             Task task = this.fixture.Create<Task>();
             Plan p = this.fixture.ConstructPlan();
-            p.AssociateTask((TaskId)task.AggregateId, task.Title());
-            p.AssociateTask((TaskId)task.AggregateId, task.Title());
-            p.AssociateTask((TaskId)task.AggregateId, task.Title());
+            p.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
+            p.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
+            p.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
 
             Assert.AreEqual(1, p.UncommittedChanges().OfType<TaskAssociatedToPlan>().Count(x => x.TaskId == task.AggregateId));
         }

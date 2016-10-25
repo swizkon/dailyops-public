@@ -48,7 +48,7 @@
     <Compile Include="Domain\CollaboratorId.cs" />
     <Compile Include="Domain\CollaboratorRole.cs" />
     <Compile Include="Domain\Plan.cs" />
-    <Compile Include="Domain\PlanSummary.cs" />
+    <Compile Include="Domain\Summary.cs" />
     <Compile Include="Domain\ReccurencePolicy.cs" />
     <Compile Include="Domain\TaskId.cs" />
     <Compile Include="Domain\PlanId.cs" />

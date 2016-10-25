@@ -6,6 +6,7 @@ using System.Data;
 namespace DailyOps.Domain
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     public class Task : AggregateBase
     {
@@ -15,7 +16,7 @@ namespace DailyOps.Domain
 
         private string lastCompletion;
 
-        private IDictionary<DateTimeOffset, string> completionHistory = new Dictionary<DateTimeOffset, string>();
+        private IDictionary<DateTimeOffset, string> completionHistory = new SortedDictionary<DateTimeOffset, string>();
 
         private ReccurencePolicy reccurencePolicy;
 
@@ -29,6 +30,7 @@ namespace DailyOps.Domain
             AcceptChange(new TaskCreated(id, planId, title, taskType));
         }
 
+        public DateTimeOffset? LastCompletion => this.completionHistory?.Last().Key;
 
         private void Apply(TaskCreated e)
         {
@@ -60,11 +62,15 @@ namespace DailyOps.Domain
 
         public void MarkCompleted(string user, DateTimeOffset timestamp)
         {
-            AcceptChange(new TaskMarkedCompleted(Id, user, timestamp.ToString()));
+            AcceptChange(new TaskMarkedCompleted(Id, user, timestamp.ToString("O"), (int) timestamp.Offset.TotalMinutes));
         }
 
         private void Apply(TaskMarkedCompleted e)
         {
+            DateTimeOffset t;
+            DateTimeOffset.TryParse(e.Timestamp, out t);
+
+            completionHistory[t] = e.User;
             lastCompletion = e.Timestamp;
         }
 
@@ -78,9 +84,9 @@ namespace DailyOps.Domain
             lastCompletion = e.Timestamp;
         }
 
-        public string Title()
+        public Summary Summary()
         {
-            return this.title;
+            return new Summary(this.title, this.interval.ToString());
         }
     }
 }
