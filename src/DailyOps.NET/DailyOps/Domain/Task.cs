@@ -1,26 +1,31 @@
-﻿using DailyOps.Events;
+﻿using System;
+using System.Globalization;
+
+using DailyOps.Events;
+
 using Nuclear.Domain;
-using System;
-using System.Data;
 
 namespace DailyOps.Domain
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
 
     public class Task : AggregateBase
     {
         private string title;
-        private Reccurence interval;
-        private Guid planId;
 
-        private string lastCompletion;
+        private Reccurence interval;
+
+        private Guid planId;
 
         private IDictionary<DateTimeOffset, string> completionHistory = new SortedDictionary<DateTimeOffset, string>();
 
         private ReccurencePolicy reccurencePolicy;
 
-        public Task(Guid id) : base(id)
+        public Task(Guid id)
+            : base(id)
         {
         }
 
@@ -31,6 +36,8 @@ namespace DailyOps.Domain
         }
 
         public DateTimeOffset? LastCompletion => this.completionHistory?.Last().Key;
+
+        public DateTime NextReapperance { get; private set; }
 
         private void Apply(TaskCreated e)
         {
@@ -53,16 +60,14 @@ namespace DailyOps.Domain
             AcceptChange(new TaskRenamed(Id, this.title));
         }
 
-
         private void Apply(TaskRenamed e)
         {
             title = e.Title;
         }
 
-
         public void MarkCompleted(string user, DateTimeOffset timestamp)
         {
-            AcceptChange(new TaskMarkedCompleted(Id, user, timestamp.ToString("O"), (int) timestamp.Offset.TotalMinutes));
+            AcceptChange(new TaskMarkedCompleted(Id, user, timestamp.ToString("O"), (int)timestamp.Offset.TotalMinutes));
         }
 
         private void Apply(TaskMarkedCompleted e)
@@ -71,17 +76,66 @@ namespace DailyOps.Domain
             DateTimeOffset.TryParse(e.Timestamp, out t);
 
             completionHistory[t] = e.User;
-            lastCompletion = e.Timestamp;
+            calculateNextReapperance();
         }
 
         public void RevokeCompletion(string user, DateTimeOffset timestamp)
         {
-            AcceptChange(new TaskCompletionRevoked(Id, user, timestamp.ToString()));
+            if (LastCompletion != timestamp) return;
+            AcceptChange(new TaskCompletionRevoked(Id, user, timestamp.ToString("O")));
         }
 
         private void Apply(TaskCompletionRevoked e)
         {
-            lastCompletion = e.Timestamp;
+            DateTimeOffset t;
+            DateTimeOffset.TryParse(e.Timestamp, out t);
+            this.completionHistory.Remove(t);
+            calculateNextReapperance();
+        }
+
+        private void calculateNextReapperance()
+        {
+            if (!LastCompletion.HasValue)
+            {
+                this.NextReapperance = new DateTime(1970, 1, 1);
+                return;
+            }
+
+            DateTimeOffset lastCompletion = LastCompletion.Value;
+            var lastCompletionUtc = lastCompletion.UtcDateTime;
+
+            switch (interval)
+            {
+                case Reccurence.Daily:
+                    lastCompletionUtc = lastCompletionUtc.AddDays(1);
+                    break;
+
+                case Reccurence.Weekly:
+                    lastCompletionUtc = lastCompletionUtc.AddDays(1);
+                    while (lastCompletionUtc.DayOfWeek != CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek)
+                        lastCompletionUtc = lastCompletionUtc.AddDays(1);
+                    break;
+
+                case Reccurence.Monthly:
+                    lastCompletionUtc = lastCompletionUtc.AddDays(1);
+                    while (lastCompletionUtc.Day != 1)
+                        lastCompletionUtc = lastCompletionUtc.AddDays(1);
+                    break;
+
+                default:
+                    this.NextReapperance = new DateTime(1970, 1, 1);
+                    break;
+            }
+
+            NextReapperance = new DateTime(
+                                  lastCompletionUtc.Year,
+                                  lastCompletionUtc.Month,
+                                  lastCompletionUtc.Day,
+                                  8,
+                                  0,
+                                  0,
+                                  0,
+                                  DateTimeKind.Utc);
         }
 
         public Summary Summary()
