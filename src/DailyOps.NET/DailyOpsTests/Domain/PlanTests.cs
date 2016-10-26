@@ -1,13 +1,16 @@
-﻿using Xunit;
-using DailyOps.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DailyOps.DomainTests
+﻿namespace DailyOpsTests.Domain
 {
+    using System;
+
+    using DailyOps.Domain;
+
+    using EventStore.ClientAPI;
+
+    using Nuclear.Domain;
+    using Nuclear.EventStore;
+
+    using Xunit;
+
     public class PlanTests // : IClassFixture<Plan>
     {
         [Fact()]
@@ -18,8 +21,11 @@ namespace DailyOps.DomainTests
             p.AssignOwnership("Jonas");
 
             var switchboard = new Nuclear.Lazy.Switchboard();
-
-            var eventstore = new Nuclear.Lazy.InMemEventStore(switchboard);
+            IEventStoreConnection connection = EventStoreConnection.Create(new Uri("tcp://admin:changeit@localhost:1113"));
+            connection.ConnectAsync().Wait();
+            // new  EventStoreConnectionException(); // = new EventStore.ClientAPI.conn
+            IAggregateEventStore eventstore = new EventStoreRepository(connection, switchboard);
+            // var eventstore = new Nuclear.Lazy.InMemEventStore(switchboard);
             eventstore.SaveChanges(p);
 
         }

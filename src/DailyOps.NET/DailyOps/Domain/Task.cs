@@ -1,16 +1,13 @@
-﻿using System;
-using System.Globalization;
-
-using DailyOps.Events;
-
-using Nuclear.Domain;
-
-namespace DailyOps.Domain
+﻿namespace DailyOps.Domain
 {
+    using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
+
+    using DailyOps.Events;
+
+    using Nuclear.Domain;
 
     public class Task : AggregateBase
     {
@@ -35,7 +32,13 @@ namespace DailyOps.Domain
             AcceptChange(new TaskCreated(id, planId, title, taskType));
         }
 
-        public DateTimeOffset? LastCompletion => this.completionHistory?.Last().Key;
+        public DateTimeOffset? LastCompletion
+        {
+            get
+            {
+                return (completionHistory.Count > 0) ? completionHistory.Last().Key : (DateTimeOffset?)null;
+            }
+        }
 
         public DateTime NextReapperance { get; private set; }
 
@@ -67,6 +70,9 @@ namespace DailyOps.Domain
 
         public void MarkCompleted(string user, DateTimeOffset timestamp)
         {
+            if(LastCompletion.HasValue && LastCompletion.Value.UtcDateTime > timestamp.UtcDateTime)
+                throw new InvalidOperationException("The task has a newer completion timestamp.");
+
             AcceptChange(new TaskMarkedCompleted(Id, user, timestamp.ToString("O"), (int)timestamp.Offset.TotalMinutes));
         }
 
@@ -127,15 +133,7 @@ namespace DailyOps.Domain
                     break;
             }
 
-            NextReapperance = new DateTime(
-                                  lastCompletionUtc.Year,
-                                  lastCompletionUtc.Month,
-                                  lastCompletionUtc.Day,
-                                  8,
-                                  0,
-                                  0,
-                                  0,
-                                  DateTimeKind.Utc);
+            NextReapperance = new DateTime(lastCompletionUtc.Year, lastCompletionUtc.Month, lastCompletionUtc.Day, 8, 0, 0, 0, DateTimeKind.Utc);
         }
 
         public Summary Summary()

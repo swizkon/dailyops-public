@@ -68,15 +68,25 @@
 
         [Repeat(100)]
         [Test]
+        public void A_owner_should_be_assignable()
+        {
+            var owner = fixture.Create<string>();
+            Plan plan = this.fixture.ConstructPlan();
+            plan.AssignOwnership(owner);
+            Assert.AreEqual(1, plan.UncommittedChanges().OfType<PlanCollaboratorAdded>().Count(x => x.Name == owner && x.Role == CollaboratorRole.Owner.ToString()));
+        }
+
+        [Repeat(100)]
+        [Test]
         public void When_associating_tasks_It_adds_is_once()
         {
             Task task = this.fixture.Create<Task>();
-            Plan p = this.fixture.ConstructPlan();
-            p.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
-            p.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
-            p.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
+            Plan plan = this.fixture.ConstructPlan();
+            plan.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
+            plan.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
+            plan.AssociateTask((TaskId)task.AggregateId, task.Summary().Name);
 
-            Assert.AreEqual(1, p.UncommittedChanges().OfType<TaskAssociatedToPlan>().Count(x => x.TaskId == task.AggregateId));
+            Assert.AreEqual(1, plan.UncommittedChanges().OfType<TaskAssociatedToPlan>().Count(x => x.TaskId == task.AggregateId));
         }
 
     }

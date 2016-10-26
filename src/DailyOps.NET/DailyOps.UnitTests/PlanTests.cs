@@ -16,15 +16,5 @@ namespace DailyOps.UnitTests
         {
             plan = new Plan(Guid.NewGuid(), "My plan", "The description", "jonas", PlanType.Collaborative);
         }
-
-        [TestMethod]
-        public void A_owner_should_be_assignable()
-        {
-            this.plan.AssignOwnership("jonas");
-
-            // plan.ReconstituteFromHistory(IEnumerable<Event> events);
-
-            // Assert.AreEqual()
-        }
     }
 }

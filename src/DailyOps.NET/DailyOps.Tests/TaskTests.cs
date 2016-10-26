@@ -6,7 +6,6 @@
     using DailyOps.Tests.Helpers;
 
     using NUnit.Framework;
-    using NUnit.Framework.Internal;
 
     using Ploeh.AutoFixture;
 
@@ -48,6 +47,44 @@
             task.MarkCompleted("jonas", timestamp);
 
             Assert.AreEqual(nextReapperance, task.NextReapperance);
+        }
+
+        [TestCase("2016-10-25 08:32:40 +02:00", "2016-11-25 08:32:40 +02:00", "2016-10-26 08:00:00")]
+        [TestCase("2016-06-01 23:32:40 +02:00", "2016-06-21 23:32:40 +02:00", "2016-06-02 08:00:00")]
+        public void When_revoking_completion_for_a_daily_task_It_sets_the_correct_releaseTimestamp(string firstTimestamp, string secondTimestamp, string expectedReapperance)
+        {
+            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Daily);
+
+            var firstCompletion = DateTimeOffset.Parse(firstTimestamp);
+            task.MarkCompleted("jonas", firstCompletion);
+
+            var secondCompletion = DateTimeOffset.Parse(secondTimestamp);
+            task.MarkCompleted("jonas", secondCompletion);
+
+            task.RevokeCompletion("jonas", secondCompletion);
+
+            var expectedReapperanceDateTime = DateTime.Parse(expectedReapperance);
+            Assert.AreEqual(expectedReapperanceDateTime, task.NextReapperance);
+        }
+
+
+        [TestCase("2016-10-25 08:32:40 +02:00", "2016-09-25 08:32:40 +02:00")]
+        [TestCase("2016-06-01 23:32:40 +02:00", "2016-06-01 07:32:40 +02:00")]
+        [TestCase("2016-06-01 00:32:40 +02:00", "2016-06-01 01:32:40 +04:00")]
+        public void When_completing_a_task_with_older_date_It_throws_exception(string firstTimestamp, string secondTimestamp)
+        {
+            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Daily);
+            
+            var firstCompletion = DateTimeOffset.Parse(firstTimestamp);
+            task.MarkCompleted("jonas", firstCompletion);
+
+            var secondCompletion = DateTimeOffset.Parse(secondTimestamp);
+            
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                {
+                    task.MarkCompleted("jonas", secondCompletion);
+                });
         }
 
         [TestCase("2016-10-19 08:32:40 +02:00", "2016-10-24 08:00:00")]

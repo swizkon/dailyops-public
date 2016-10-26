@@ -52,7 +52,7 @@ namespace DailyOps.Domain
         public void AssignOwnership(string owner)
         {
             collaborators.Remove(CollaboratorRole.Owner);
-            AcceptChange(new PlanCollaboratorAdded(this.AggregateId, owner, "Owner"));
+            AddCollaborator(owner, CollaboratorRole.Owner);
         }
 
         private void Apply(PlanCollaboratorAdded e)
