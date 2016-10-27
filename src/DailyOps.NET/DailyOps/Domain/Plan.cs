@@ -19,7 +19,7 @@ namespace DailyOps.Domain
 
         private PlanType planType;
 
-        public Plan(Guid id, string name, string description, string owner, PlanType typeOfPlan)
+        public Plan(PlanId id, string name, string description, string owner, PlanType typeOfPlan)
             : this(id)
         {
             if (typeOfPlan == PlanType.Personal)
@@ -41,16 +41,19 @@ namespace DailyOps.Domain
         {
         }
 
-        public void AddCollaborator(string name, CollaboratorRole role)
+        public void AddCollaborator(string username, CollaboratorRole role)
         {
-            if (collaborators.ContainsKey(role) && collaborators[role].Contains(name))
+            if (collaborators.ContainsKey(role) && collaborators[role].Contains(username))
                 return;
 
-            AcceptChange(new PlanCollaboratorAdded(this.AggregateId, name, role.ToString()));
+            AcceptChange(new PlanCollaboratorAdded(this.AggregateId, username, role.ToString()));
         }
 
         public void AssignOwnership(string owner)
         {
+            if (collaborators.ContainsKey(CollaboratorRole.Owner) && collaborators[CollaboratorRole.Owner].Contains(owner))
+                return;
+
             collaborators.Remove(CollaboratorRole.Owner);
             AddCollaborator(owner, CollaboratorRole.Owner);
         }

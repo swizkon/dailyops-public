@@ -26,7 +26,7 @@
             string owner = this.fixture.Create<string>();
             PlanType typeOf = this.fixture.Create<PlanType>();
 
-            Plan p = new Plan(Guid.NewGuid(), name, desc, owner, typeOf);
+            Plan p = new Plan((PlanId)Guid.NewGuid(), name, desc, owner, typeOf);
 
             Assert.AreEqual(name, p.Summary().Name);
             Assert.AreEqual(desc, p.Summary().Description);

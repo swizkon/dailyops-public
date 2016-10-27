@@ -20,7 +20,7 @@
             Plan plan = this.fixture.ConstructPlan();
             string title = this.fixture.Create<string>();
 
-            Task task = new Task(Guid.NewGuid(), plan.AggregateId, title, Reccurence.Daily);
+            Task task = new Task((TaskId)Guid.NewGuid(), (PlanId) plan.AggregateId, title, Reccurence.Daily);
 
             Assert.AreEqual(title, task.Summary().Name);
         }
@@ -30,7 +30,7 @@
         {
             var timestamp = DateTimeOffset.Now;
 
-            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Daily);
+            Task task = new Task((TaskId)Guid.NewGuid(), (PlanId)Guid.NewGuid(), "", Reccurence.Daily);
             task.MarkCompleted("jonas", timestamp);
 
             Assert.AreEqual(timestamp, task.LastCompletion);
@@ -43,7 +43,7 @@
             var timestamp = DateTimeOffset.Parse(completedTimestamp);
             var nextReapperance = DateTime.Parse(nextRelease);
 
-            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Daily);
+            Task task = new Task((TaskId)Guid.NewGuid(),(PlanId) Guid.NewGuid(), "", Reccurence.Daily);
             task.MarkCompleted("jonas", timestamp);
 
             Assert.AreEqual(nextReapperance, task.NextReapperance);
@@ -53,7 +53,7 @@
         [TestCase("2016-06-01 23:32:40 +02:00", "2016-06-21 23:32:40 +02:00", "2016-06-02 08:00:00")]
         public void When_revoking_completion_for_a_daily_task_It_sets_the_correct_releaseTimestamp(string firstTimestamp, string secondTimestamp, string expectedReapperance)
         {
-            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Daily);
+            Task task = new Task((TaskId)Guid.NewGuid(), (PlanId)Guid.NewGuid(), "", Reccurence.Daily);
 
             var firstCompletion = DateTimeOffset.Parse(firstTimestamp);
             task.MarkCompleted("jonas", firstCompletion);
@@ -73,7 +73,7 @@
         [TestCase("2016-06-01 00:32:40 +02:00", "2016-06-01 01:32:40 +04:00")]
         public void When_completing_a_task_with_older_date_It_throws_exception(string firstTimestamp, string secondTimestamp)
         {
-            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Daily);
+            Task task = new Task((TaskId)Guid.NewGuid(),(PlanId) Guid.NewGuid(), "", Reccurence.Daily);
             
             var firstCompletion = DateTimeOffset.Parse(firstTimestamp);
             task.MarkCompleted("jonas", firstCompletion);
@@ -100,7 +100,7 @@
             var timestamp = DateTimeOffset.Parse(completedTimestamp);
             var nextReapperance = DateTime.Parse(nextRelease);
 
-            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Weekly);
+            Task task = new Task((TaskId)Guid.NewGuid(),(PlanId) Guid.NewGuid(), "", Reccurence.Weekly);
             task.MarkCompleted("jonas", timestamp);
 
             Assert.AreEqual(nextReapperance, task.NextReapperance);
@@ -114,7 +114,7 @@
             var timestamp = DateTimeOffset.Parse(completedTimestamp);
             var nextReapperance = DateTime.Parse(nextRelease);
 
-            Task task = new Task(Guid.NewGuid(), Guid.NewGuid(), "", Reccurence.Monthly);
+            Task task = new Task((TaskId)Guid.NewGuid(),(PlanId) Guid.NewGuid(), "", Reccurence.Monthly);
             task.MarkCompleted("jonas", timestamp);
 
             Assert.AreEqual(nextReapperance, task.NextReapperance);

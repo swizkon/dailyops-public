@@ -17,7 +17,7 @@
             PlanType? planType = null)
         {
             return new Plan(
-                id: planId ?? fixture.Create<Guid>(), 
+                id: (PlanId)(planId ?? fixture.Create<Guid>()), 
                 name: name ?? fixture.Create<string>(), 
                 description: desc ?? fixture.Create<string>(),
                 owner: owner ?? fixture.Create<string>(), typeOfPlan: planType ?? fixture.Create<PlanType>());

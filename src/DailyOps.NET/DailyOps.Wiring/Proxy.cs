@@ -30,7 +30,7 @@ namespace DailyOps.Wiring
             b.RegisterHandler<CreatePersonalPlan>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
-                var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Personal);
+                var plan = new Plan((PlanId)c.Id, c.Name, c.Description, c.Owner, PlanType.Personal);
                 plan.AssignOwnership(c.Owner);
                 repository.Save(plan);
             });
@@ -55,7 +55,7 @@ namespace DailyOps.Wiring
             b.RegisterHandler<CreateCollaborativePlan>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
-                var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Collaborative);
+                var plan = new Plan((PlanId)c.Id, c.Name, c.Description, c.Owner, PlanType.Collaborative);
                 plan.AssignOwnership(c.Owner);
                 repository.Save(plan);
             });
@@ -78,7 +78,7 @@ namespace DailyOps.Wiring
             b.RegisterHandler<CreateDistributablePlan>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Plan>();
-                var plan = new Plan(c.Id, c.Name, c.Description, c.Owner, PlanType.Distributable);
+                var plan = new Plan((PlanId)c.Id, c.Name, c.Description, c.Owner, PlanType.Distributable);
                 plan.AssignOwnership(c.Owner);
 
                 repository.Save(plan);
@@ -105,7 +105,7 @@ namespace DailyOps.Wiring
             b.RegisterHandler<CreateTask>((c) =>
             {
                 var repository = new RepositoryFactory(bus, container).Build<Task>();
-                var task = new Task(c.TaskId, c.PlanId, c.Name, c.Interval);
+                var task = new Task((TaskId)c.TaskId, (PlanId)c.PlanId, c.Name, c.Interval);
                 repository.Save(task);
             });
 

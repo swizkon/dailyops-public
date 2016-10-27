@@ -11,13 +11,11 @@
 
     public class Task : AggregateBase
     {
-        private string title;
-
         private Reccurence interval;
 
         private Guid planId;
 
-        private IDictionary<DateTimeOffset, string> completionHistory = new SortedDictionary<DateTimeOffset, string>();
+        private readonly IDictionary<DateTimeOffset, string> completionHistory = new SortedDictionary<DateTimeOffset, string>();
 
         private ReccurencePolicy reccurencePolicy;
 
@@ -26,7 +24,7 @@
         {
         }
 
-        public Task(Guid id, Guid planId, string title, Reccurence taskType)
+        public Task(TaskId id, PlanId planId, string title, Reccurence taskType)
             : base(id)
         {
             AcceptChange(new TaskCreated(id, planId, title, taskType));
@@ -42,17 +40,19 @@
 
         public DateTime NextReapperance { get; private set; }
 
+        public string Title { get; private set; }
+
         private void Apply(TaskCreated e)
         {
             Id = e.Id;
             planId = e.PlanId;
-            title = e.Title;
+            Title = e.Title;
             interval = e.Interval;
         }
 
         public void ChangeTitle(string newTitle)
         {
-            if (this.title != null && this.title == newTitle)
+            if (this.Title != null && this.Title == newTitle)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("No need to change the name...");
@@ -60,12 +60,12 @@
                 return;
             }
 
-            AcceptChange(new TaskRenamed(Id, this.title));
+            AcceptChange(new TaskRenamed(Id, newTitle));
         }
 
         private void Apply(TaskRenamed e)
         {
-            title = e.Title;
+            Title = e.Title;
         }
 
         public void MarkCompleted(string user, DateTimeOffset timestamp)
@@ -138,7 +138,7 @@
 
         public Summary Summary()
         {
-            return new Summary(this.title, this.interval.ToString());
+            return new Summary(this.Title, this.interval.ToString());
         }
     }
 }
