@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Commands\PlanCommands.cs" />
     <Compile Include="Commands\TaskCommands.cs" />
+    <Compile Include="Domain\Collaborator.cs" />
+    <Compile Include="Events\CollaboratorCreated.cs" />
     <Compile Include="Domain\CollaboratorId.cs" />
     <Compile Include="Domain\CollaboratorRole.cs" />
     <Compile Include="Domain\Plan.cs" />

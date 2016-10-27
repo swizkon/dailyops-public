@@ -1,13 +1,9 @@
-﻿using Nuclear.Domain;
-using Nuclear.Messaging;
-using System;
-using System.Collections.Generic; // sdsdsdghg
-using System.Linq;
-using System.Text; 
-using System.Threading.Tasks;
-
-namespace DailyOps.Events
+﻿namespace DailyOps.Events
 {
+    using System;
+
+    using Nuclear.Domain;
+
     public class PersonalPlanCreated : PlanCreated
     {
         public PersonalPlanCreated(Guid id, string name, string description, string owner)
