@@ -21,9 +21,7 @@
     public class AggregateCache<TAggregate> where TAggregate : class, Aggregate
     {
         private readonly IAggregateEventStore aggregateEventStore;
-
         private static ConcurrentDictionary<Guid, TAggregate> cache = new ConcurrentDictionary<Guid, TAggregate>();
-
 
         public AggregateCache(IAggregateEventStore aggregateEventStore)
         {
@@ -43,6 +41,17 @@
             cache.TryAdd(aggregateId, aggregate);
 
             return aggregate;
+        }
+
+        public void Save(TAggregate aggregate)
+        {
+            cache.AddOrUpdate(
+                aggregate.AggregateId,
+                aggregate,
+                (id, current) => current.Revision <= aggregate.Revision ? aggregate : current);
+
+            AggregateRepository<TAggregate> repository = new EventSourcedAggregateRepository<TAggregate>(aggregateEventStore);
+            repository.Save(aggregate);
         }
 
     }
