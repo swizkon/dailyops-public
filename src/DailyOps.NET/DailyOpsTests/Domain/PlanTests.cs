@@ -16,11 +16,11 @@
 
     using Xunit;
 
-
-
-    public class AggregateCache<TAggregate> where TAggregate : class, Aggregate
+    public class AggregateCache<TAggregate>
+        where TAggregate : class, Aggregate
     {
         private readonly IAggregateEventStore aggregateEventStore;
+
         private static ConcurrentDictionary<Guid, TAggregate> cache = new ConcurrentDictionary<Guid, TAggregate>();
 
         public AggregateCache(IAggregateEventStore aggregateEventStore)
@@ -31,8 +31,7 @@
         public TAggregate GetById(Guid aggregateId)
         {
             TAggregate aggregate;
-            if (cache.TryGetValue(aggregateId, out aggregate))
-                return aggregate;
+            if (cache.TryGetValue(aggregateId, out aggregate)) return aggregate;
 
             AggregateRepository<TAggregate> repository =
                 new EventSourcedAggregateRepository<TAggregate>(aggregateEventStore);
@@ -50,10 +49,10 @@
                 aggregate,
                 (id, current) => current.Revision <= aggregate.Revision ? aggregate : current);
 
-            AggregateRepository<TAggregate> repository = new EventSourcedAggregateRepository<TAggregate>(aggregateEventStore);
+            AggregateRepository<TAggregate> repository =
+                new EventSourcedAggregateRepository<TAggregate>(aggregateEventStore);
             repository.Save(aggregate);
         }
-
     }
 
     public class PlanTests
@@ -71,20 +70,19 @@
 
             WithEventstore(
                 (eventstore) =>
-                {
-                    var cache = new AggregateCache<Task>(eventstore);
-                    var task = cache.GetById(taskGuid);
-                    firstLoad = timer.ElapsedMilliseconds;
-                });
+                    {
+                        var cache = new AggregateCache<Task>(eventstore);
+                        var task = cache.GetById(taskGuid);
+                        firstLoad = timer.ElapsedMilliseconds;
+                    });
 
             WithEventstore(
                 (eventstore) =>
-                {
-                    var cache = new AggregateCache<Task>(eventstore);
-                    var task = cache.GetById(taskGuid);
-                    secondLoad = timer.ElapsedMilliseconds;
-                });
-            
+                    {
+                        var cache = new AggregateCache<Task>(eventstore);
+                        var task = cache.GetById(taskGuid);
+                        secondLoad = timer.ElapsedMilliseconds;
+                    });
         }
 
         [Fact()]
@@ -98,7 +96,7 @@
             var init = timer.ElapsedMilliseconds;
             long loadEvents;
 
-            WithAggregate<Task>(taskGuid, (task) => { loadEvents = timer.ElapsedMilliseconds;});
+            WithAggregate<Task>(taskGuid, (task) => { loadEvents = timer.ElapsedMilliseconds; });
         }
 
         [Fact()]

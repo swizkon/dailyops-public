@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css" />
+
+</head>
+<body>
+
+<div class="container">
+    <div class="col-md-6 col-md-offset-3">
+        <h1>Daily Ops <small>SignalR vs Firebase</small></h1>
+    </div>
+</div>
+
+<div id="debugger"></div>
+
+<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.all.js"></script>
+<script src="/scripts/rx.firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyBA2c4xQx8enG0l0eGYyvtC5TG_azMx054",
+        authDomain: "dailyops-1120.firebaseapp.com",
+        databaseURL: "https://dailyops-1120.firebaseio.com",
+        storageBucket: "dailyops-1120.appspot.com",
+        messagingSenderId: "1057072569039"
+    };
+    
+    firebase.initializeApp(config);
+
+
+
+    var database = firebase.database();
+
+    var totalVisitors = database.ref().child('totalVisitors');
+    totalVisitors.once('value', function (snapshot) {
+        totalVisitors.set(snapshot.val() + 1);
+    });
+
+    // totalVisitors.set(6);
+
+    database.ref('users').on('value', function () {
+        console.log("Users changed...");
+        console.log(arguments);
+    });
+
+    function logAccess(userId, name, email, display) {
+        database.ref('users/' + userId).set({
+            username: name,
+            email: email,
+            displayName: display
+        });
+        database.ref('users/' + userId + '/activity').push().set({
+            timestamp: new Date().getTime(),
+            displayName: display
+        });
+    }
+
+    logAccess("12345", "swizkon", "jonas@jerndin.se", "Jonas Jerndin");
+
+
+</script>
+</body>
+</html>

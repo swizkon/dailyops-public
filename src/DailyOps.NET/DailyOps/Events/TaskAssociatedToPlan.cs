@@ -16,6 +16,6 @@
             this.TaskId = taskId;
             this.PlanId = planId;
             this.Title = title;
-        }
+        }   
     }
 }
