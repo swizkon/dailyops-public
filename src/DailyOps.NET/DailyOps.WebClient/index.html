@@ -4,6 +4,10 @@
     <title></title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css" />
+    
+    <style>
+        body{ height:100%;width: 100%;}
+    </style>
 
 </head>
 <body>
@@ -13,9 +17,35 @@
         <h1>Daily Ops <small>SignalR vs Firebase</small></h1>
     </div>
 </div>
+    
+<hr/>
 
-<div id="debugger"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>XingZen <small>SignalR vs Firebase</small></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+            <h3>Setup order <small>merchant</small></h3>
+            <input type="number" id="price" placeholder="Price" />
+            <input type="text" id="transaction-id" placeholder="Transaction id" />
+            <input type="button" id="place-order" value="Place order" class="btn-md" />
+        </div>
+        <div class="col-md-3">
+            <h3>Pending <small>customer</small></h3>
+            <div id="pending-orders"></div>
+        </div>
+    </div>
+</div>
 
+
+<div id="debugger">
+    
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.all.js"></script>
 <script src="/scripts/rx.firebase.js"></script>
@@ -61,6 +91,32 @@
 
     logAccess("12345", "swizkon", "jonas@jerndin.se", "Jonas Jerndin");
 
+
+
+    // var input = $('html');
+
+    var source = Rx.Observable.fromEvent($('html'), 'click');
+        
+    var subscription = source.subscribe(
+      function (x) {
+          console.log('Next: Clicked!: ' + x);
+      },
+      function (err) {
+          console.log('Error: %s', err);
+      },
+      function () {
+          console.log('Completed');
+      });
+
+    input.trigger('click');
+
+    // => Next: Clicked
+
+    var transaction$ = 1;
+
+    $(document).ready(function() {
+        
+    });
 
 </script>
 </body>

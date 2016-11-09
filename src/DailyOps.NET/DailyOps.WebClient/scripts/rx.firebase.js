@@ -13,7 +13,7 @@
     };
 
     //Firebase.prototype.__proto__.observe = function (eventType) {
-    //    var query = this;
+    //    var query = this; 
     //    return Rx.Observable.create(function (observer) {
     //        var listener = query.on(eventType, makeCallback(eventType, observer), function (error) {
     //            observer.onError(error);
