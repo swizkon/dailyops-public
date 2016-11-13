@@ -105,7 +105,7 @@
             // fb36789e-5cf2-4c8a-8d48-e2ee0b7727a9
             Guid planGuid = new Guid("fb36789e-5cf2-4c8a-8d48-e2ee0b7727a9");
 
-            WithAggregate<Plan>(planGuid, (plan) => { plan.AddCollaborator("Daddy Mac", CollaboratorRole.Admin); });
+            WithAggregate<Plan>(planGuid, (plan) => { plan.AddCollaborator("Daddy Mac Master", CollaboratorRole.Admin); });
         }
 
         void WithEventstore(Action<IAggregateEventStore> work)

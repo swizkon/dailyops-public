@@ -69,7 +69,7 @@ namespace DailyOps.Web.Controllers
             if (string.IsNullOrEmpty(planName))
                 throw new ArgumentNullException(nameof(planName));
 
-            var planId = new PlanId();
+            var planId = PlanId.Create();
             var command = (plantype == PlanType.Collaborative)
                 ? new CreateCollaborativePlan(planId, planName, planDescription, Thread.CurrentPrincipal.Identity.Name)
                 : (plantype == PlanType.Personal)

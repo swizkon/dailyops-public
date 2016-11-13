@@ -1,6 +1,4 @@
-﻿using DailyOps.Domain;
-using NHibernate.Mapping.ByCode.Conformist;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -8,45 +6,42 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
+using DailyOps.Domain;
+
+using NHibernate.Mapping.ByCode.Conformist;
+
 namespace DailyOps.Wiring.ReadModels
 {
+    using FluentNHibernate.Mapping;
+
     public class CollaborationRepo : ReadModel
     {
         public CollaborationRepo(ReadModelConnectionString connectionString)
             : base(connectionString)
         {
-
         }
-
 
         public IEnumerable<CollaboratorDto> ByPlanId(Guid planId)
         {
-            return base.Query<CollaboratorDto>((session) =>
-            {
-                return session
-                    .QueryOver<CollaboratorDto>()
-                    .Where(t => t.PlanId == planId)
-                    .List();
-            });
-
+            return
+                this.Query<CollaboratorDto>(
+                    (session) => { return session.QueryOver<CollaboratorDto>().Where(t => t.PlanId == planId).List(); });
         }
-
 
         public IEnumerable<PlanId> PlansForUser(IIdentity identity)
         {
-            return base.Query<Guid>((session) =>
-            {
-                return session.QueryOver<CollaboratorDto>()
-                    .Select(c => c.PlanId)
-                    .Where(t => t.Username == identity.Name)
-                    .List<Guid>();
-            })
-            .Distinct()
-            .ToList()
-            .ConvertAll<PlanId>(id => new PlanId(id));
+            return
+                this.Query<Guid>(
+                    (session) =>
+                        {
+                            return
+                                session.QueryOver<CollaboratorDto>()
+                                    .Select(c => c.PlanId)
+                                    .Where(t => t.Username == identity.Name)
+                                    .List<Guid>();
+                        }).Distinct().ToList().ConvertAll<PlanId>(id => new PlanId(id));
         }
     }
-
 
     internal class CollaborationInviteMap : ClassMapping<CollaborationInviteDto>
     {
@@ -74,7 +69,6 @@ namespace DailyOps.Wiring.ReadModels
         public virtual bool Accepted { get; set; }
     }
 
-
     internal class CollaboratorsMap : ClassMapping<CollaboratorDto>
     {
         public CollaboratorsMap()
@@ -91,9 +85,13 @@ namespace DailyOps.Wiring.ReadModels
     public class CollaboratorDto
     {
         public virtual Guid CollaboratorId { get; set; }
+
         public virtual Guid PlanId { get; set; }
+
         public virtual string DisplayName { get; set; }
+
         public virtual string Username { get; set; }
+
         public virtual string Role { get; set; }
     }
 }

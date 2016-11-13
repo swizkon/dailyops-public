@@ -5,11 +5,11 @@
 //   Defines the ReadModel type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace DailyOps.Wiring.ReadModels
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -21,6 +21,9 @@ namespace DailyOps.Wiring.ReadModels
     using NHibernate.Cfg.MappingSchema;
     using NHibernate.Dialect;
     using NHibernate.Mapping.ByCode;
+    using NHibernate.Tool.hbm2ddl;
+
+    using Configuration = NHibernate.Cfg.Configuration;
 
     public abstract class ReadModel
     {
@@ -31,39 +34,32 @@ namespace DailyOps.Wiring.ReadModels
             _configuration = buildConfig(connectionString);
         }
 
-        protected ReadModel(System.Configuration.ConnectionStringSettings connectionStringSettings)
+        protected ReadModel(ConnectionStringSettings connectionStringSettings)
             : this((ReadModelConnectionString)connectionStringSettings.ConnectionString)
         {
         }
 
         private static Configuration buildConfig(ReadModelConnectionString connectionString)
         {
-
-            var cfg = new Configuration()
-               .DataBaseIntegration(db =>
-               {
-                   db.ConnectionString = (String)connectionString;
-                   db.Dialect<MySQLDialect>();
-               });
+            var cfg = new Configuration().DataBaseIntegration(
+                db =>
+                    {
+                        db.ConnectionString = (String)connectionString;
+                        db.Dialect<MySQLDialect>();
+                    });
 
             /* Add the mapping we defined: */
             var mapper = new ModelMapper();
             mapper.AddMappings(
-                    Assembly
-                    .GetExecutingAssembly()
+                Assembly.GetExecutingAssembly()
                     .GetTypes()
-                    .Where<Type>(g => g.FullName.EndsWith("Map")
-                        || g.IsSubclassOf(typeof(ClassMapping))
-                    )
-                );
+                    .Where<Type>(g => g.FullName.EndsWith("Map") || g.IsSubclassOf(typeof(ClassMapping))));
 
             HbmMapping mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
             cfg.AddMapping(mapping);
 
             return cfg;
         }
-
-
 
         protected IEnumerable<TModel> Query<TModel>(Func<ISession, IEnumerable<TModel>> unitOfWork)
         {
@@ -86,7 +82,6 @@ namespace DailyOps.Wiring.ReadModels
             }
         }
 
-
         protected TModel Find<TModel>(Func<ISession, TModel> query)
         {
             /* Create a session and execute a query: */
@@ -97,22 +92,14 @@ namespace DailyOps.Wiring.ReadModels
             }
         }
 
-
         internal TModel FindById<TModel>(object id) where TModel : class
         {
-            return Find<TModel>(session =>
-            {
-                return session.Get<TModel>(id);
-            });
+            return Find<TModel>(session => { return session.Get<TModel>(id); });
         }
-
 
         internal void Put<TModel>(TModel dto) where TModel : class
         {
-            Transaction((session) =>
-            {
-                session.SaveOrUpdate(dto);
-            });
+            Transaction((session) => { session.SaveOrUpdate(dto); });
         }
 
         internal static void CreateReadModelSchema(ReadModelConnectionString connectionString)
@@ -121,7 +108,7 @@ namespace DailyOps.Wiring.ReadModels
 
             if (!schemaCreated)
             {
-                NHibernate.Tool.hbm2ddl.SchemaExport schema = new NHibernate.Tool.hbm2ddl.SchemaExport(buildConfig(connectionString));
+                SchemaExport schema = new NHibernate.Tool.hbm2ddl.SchemaExport(buildConfig(connectionString));
                 schema.Create(true, true);
                 schemaCreated = true;
             }
@@ -129,19 +116,13 @@ namespace DailyOps.Wiring.ReadModels
 
         internal static string ExportReadModelSchema(ReadModelConnectionString connectionString)
         {
-            NHibernate.Tool.hbm2ddl.SchemaExport schema = new NHibernate.Tool.hbm2ddl.SchemaExport(buildConfig(connectionString));
-
+            SchemaExport schema = new NHibernate.Tool.hbm2ddl.SchemaExport(buildConfig(connectionString));
 
             StringBuilder data = new StringBuilder();
 
-            schema.Create((a) =>
-                {
-                    data.AppendLine(a);
-                }, false);
-
+            schema.Create((a) => { data.AppendLine(a); }, false);
 
             return data.ToString();
-
         }
     }
 }

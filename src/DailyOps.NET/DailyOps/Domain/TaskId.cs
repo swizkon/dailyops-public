@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DailyOps.Domain
 {
-    public sealed class TaskId :IEquatable<TaskId>
+    public sealed class TaskId : IEquatable<TaskId>
     {
         private readonly Guid id;
 
         private TaskId(Guid id)
         {
             this.id = id;
+        }
+
+        public static TaskId Create()
+        {
+            return new TaskId(Guid.NewGuid());
         }
 
         public static explicit operator TaskId(Guid id)
@@ -27,7 +28,7 @@ namespace DailyOps.Domain
 
         public bool Equals(TaskId other)
         {
-            return this.id.Equals(other.id);
+            return this.id.Equals(other?.id);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace DailyOps.TestConsole
 
         static void GenerateAcmePlan()
         {
-            PlanId planId = new PlanId();
+            var planId = PlanId.Create();
             var newPLan = new CreateCollaborativePlan(planId, "ACME plan", "Description goes here...", "BigBoss(guest)");
 
             Wiring.Proxy.SendCommand(newPLan);
@@ -48,8 +48,9 @@ namespace DailyOps.TestConsole
             foreach (string task in "Write executive summary,Tax planning".Split(','))
             {
                 Console.WriteLine(task);
-                TaskId taskId = (TaskId) Guid.NewGuid();
+                var taskId = TaskId.Create();
                 Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Reccurence.Daily));
+                Wiring.Proxy.SendCommand(new AssociateTaskToPlan(planId, taskId));
                 Thread.Sleep(200);
             }
 
@@ -58,7 +59,7 @@ namespace DailyOps.TestConsole
 
         private static void GenerateSignePlan()
         {
-            var planId = new PlanId();
+            var planId = PlanId.Create();
             var newPLan = new CreateCollaborativePlan(planId, "Signes behov", "Description goes here...", Thread.CurrentPrincipal.Identity.Name);
 
             Wiring.Proxy.SendCommand(newPLan);
@@ -69,8 +70,9 @@ namespace DailyOps.TestConsole
             foreach (var task in "D-droppar,Kåvepenin - morgon,Kåvepenin - eftermiddag,Kåvepenin - kväll,Borsta tänderna - morgon,Borsta tänderna - kväll,Kolla naglar".Split(','))
             {
                 Console.WriteLine(task);
-                var taskId = (TaskId) Guid.NewGuid();
+                var taskId = TaskId.Create();
                 Wiring.Proxy.SendCommand(new CreateTask(planId, taskId, task, Reccurence.Daily));
+                Wiring.Proxy.SendCommand(new AssociateTaskToPlan(planId, taskId));
                 Thread.Sleep(200);
             }
 
@@ -80,7 +82,7 @@ namespace DailyOps.TestConsole
         {
             var days = CultureInfo.CurrentCulture.DateTimeFormat.DayNames; 
             
-            PlanId planId = new PlanId();
+            var planId = PlanId.Create();
             var newPLan = new CreateCollaborativePlan(planId, "Desmonds åtaganden", "Saker som Desmond ska göra för att få veckopeng", Thread.CurrentPrincipal.Identity.Name);
 
             Wiring.Proxy.SendCommand(newPLan);
@@ -97,10 +99,10 @@ namespace DailyOps.TestConsole
                                 ? Reccurence.Weekly 
                                 : Reccurence.Daily;
                 
-
-                var taskId = (TaskId) Guid.NewGuid();
+                var taskId = TaskId.Create();
                 var taskCommand = new CreateTask(planId, taskId, taskTitle, reccurence);
                 Wiring.Proxy.SendCommand(taskCommand);
+                Wiring.Proxy.SendCommand(new AssociateTaskToPlan(planId, taskId));
                 Thread.Sleep(200); // Power nap to allow cool down...
 
                 var complete = new MarkTaskCompleted(taskId, "jonas(guest)", DateTimeOffset.Now);
