@@ -237,3 +237,6 @@ _Pvt_Extensions
 src/DailyOps.NET/DailyOps.Web/Web.Release.config
 old/backend/
 src/DailyOps.NET/DailyOps.Web/App_Data/DailyOps.ReadModels.Schema.mysql
+*.ncrunchproject
+*.StyleCop
+*.ncrunchsolution
