@@ -5,40 +5,32 @@ namespace DailyOps.Infra.Mapping
 
     using DailyOps.Domain.Model;
 
-    public class EmployeeMap : ClassMap<Employee>
+    public class PreferencesMap : ClassMap<Preferences>
     {
-        public EmployeeMap()
+        public PreferencesMap()
         {
             Id(x => x.Id);
-            Map(x => x.FirstName)
-              .Length(16)
-              .Not.Nullable();
 
-            Map(x => x.LastName)
-              .Length(16)
-              .Not.Nullable();
+            Component(x => x.MorningInterval)
+                  .ColumnPrefix("Morning");
+
+            Component(x => x.ForenoonInterval)
+                  .ColumnPrefix("Forenoon");
+
+            Component(x => x.AfternoonInterval)
+                  .ColumnPrefix("Afternoon");
+
+            Component(x => x.EveningInterval)
+                  .ColumnPrefix("Evening");
         }
     }
 
-    public class UserMap : ClassMap<User>
+    public class TimeIntervalMap : ComponentMap<TimeInterval>
     {
-        public UserMap()
+        public TimeIntervalMap()
         {
-            Id(x => x.Id);
-            
-            Map(x => x.FirstName)
-              .Length(16)
-              .Not.Nullable();
-            
-            Map(x => x.DisplayName)
-              .Length(16)
-              .Not.Nullable();
-
-            Map(x => x.LastName)
-              .Length(16)
-              .Not.Nullable();
-
-            References(x => x.PersonalPreferences);
+            Map(x => x.Starts);
+            Map(x => x.Ends);
         }
     }
 }

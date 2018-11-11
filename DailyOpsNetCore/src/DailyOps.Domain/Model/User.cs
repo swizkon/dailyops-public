@@ -11,5 +11,10 @@ namespace DailyOps.Domain.Model
         public virtual string LastName { get; set; }
 
         public virtual Preferences PersonalPreferences { get; set; }
+
+        public User()
+        {
+            PersonalPreferences = new Preferences();
+        }
     }
 }

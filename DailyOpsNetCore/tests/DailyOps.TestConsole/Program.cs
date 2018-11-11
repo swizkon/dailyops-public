@@ -18,10 +18,17 @@ namespace DailyOps.TestConsole
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    // create a couple of Stores each with some Products and Employees
-                    var u = new User { DisplayName = username };
-                    
-                    session.SaveOrUpdate(u);
+                    var usersToCreate = new[] { "jonas", "jenny" };
+
+                    foreach (var userToCreate in usersToCreate)
+                    {
+                        var u = new User { DisplayName = userToCreate };
+                        
+                        if(userToCreate == "jonas")
+                        u.PersonalPreferences.MorningInterval.Starts = TimeSpan.FromHours(05);
+                        
+                        session.SaveOrUpdate(u);
+                    }
 
                     transaction.Commit();
                 }
@@ -33,7 +40,12 @@ namespace DailyOps.TestConsole
 
                     foreach (var user in users)
                     {
+                        System.Console.WriteLine(user.Id);
                         System.Console.WriteLine(user.DisplayName);
+                        System.Console.WriteLine(user.PersonalPreferences.MorningInterval);
+                        System.Console.WriteLine(user.PersonalPreferences.ForenoonInterval);
+                        System.Console.WriteLine(user.PersonalPreferences.AfternoonInterval);
+                        System.Console.WriteLine(user.PersonalPreferences.EveningInterval);
                     }
                 }
             }

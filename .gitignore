@@ -240,3 +240,4 @@ src/DailyOps.NET/DailyOps.Web/App_Data/DailyOps.ReadModels.Schema.mysql
 *.ncrunchproject
 *.StyleCop
 *.ncrunchsolution
+DailyOpsNetCore/tests/DailyOps.TestConsole/firstProject.db
