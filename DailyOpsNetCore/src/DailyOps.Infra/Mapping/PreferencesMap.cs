@@ -1,6 +1,5 @@
 namespace DailyOps.Infra.Mapping
 {
-    using NHibernate;
     using FluentNHibernate.Mapping;
 
     using DailyOps.Domain.Model;
@@ -22,15 +21,6 @@ namespace DailyOps.Infra.Mapping
 
             Component(x => x.EveningInterval)
                   .ColumnPrefix("Evening");
-        }
-    }
-
-    public class TimeIntervalMap : ComponentMap<TimeInterval>
-    {
-        public TimeIntervalMap()
-        {
-            Map(x => x.Starts);
-            Map(x => x.Ends);
         }
     }
 }
