@@ -15,6 +15,10 @@ namespace DailyOps.Infra.Mapping
               .Not.Nullable();
               
             Map(x => x.Interval);
+
+            Component(x => x.DateInterval)
+                  .ColumnPrefix("DateInterval");
+
             // .CustomType<Reccurence>()
             
         }

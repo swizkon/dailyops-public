@@ -49,6 +49,11 @@ namespace DailyOps.TestConsole
                     p.Assignments.Add(new Assignment("Byt lakan", Reccurence.Monthly));
                     p.Assignments.Add(new Assignment("Byt tandborste", Reccurence.Quarterly));
 
+                    foreach (var a in p.Assignments)
+                    {
+                        a.MarkAsCompleted(DateTime.Now);
+                    }
+
                     session.SaveOrUpdate(p);
                 }
 
@@ -75,6 +80,7 @@ namespace DailyOps.TestConsole
                     {
                         System.Console.WriteLine(" -" + assignment.Summary);
                         System.Console.WriteLine("  " + assignment.Interval.ToString());
+                        System.Console.WriteLine("  " + assignment.DateInterval.ToString());
                     }
                 }
             }

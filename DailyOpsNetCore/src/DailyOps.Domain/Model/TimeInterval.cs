@@ -19,7 +19,6 @@ namespace DailyOps.Domain.Model
             Ends = ends;
         }
 
-
         public override string ToString()
         {
             return Starts + "-" + Ends;

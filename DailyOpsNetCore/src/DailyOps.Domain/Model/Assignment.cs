@@ -11,18 +11,37 @@ namespace DailyOps.Domain.Model
 
         public virtual Reccurence Interval { get; protected set; }
 
-        private readonly IDictionary<DateTimeOffset, string> completionHistory = new SortedDictionary<DateTimeOffset, string>();
+        public virtual DateWindow DateInterval { get; protected set; }
 
+        private readonly IDictionary<DateTimeOffset, string> completionHistory = new SortedDictionary<DateTimeOffset, string>();
 
         public Assignment(string summary, Reccurence interval)
         {
             Summary = summary;
             Interval = interval;
+            DateInterval = new DateWindow(DateTime.Now, DateTime.Now.AddDays(3));
         }
 
         protected Assignment()
         {
 
+        }
+
+        public virtual void MarkAsCompleted(DateTime completionDate)
+        {
+            RecalculateDates(completionDate);
+        }
+
+        private void RecalculateDates(DateTime completionDate)
+        {
+            // DateInterval.Reapperance = completionDate;
+
+            if(Interval == Reccurence.Monthly)
+            {
+                DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, completionDate.Day).AddMonths(1);
+                DateInterval.ClosingDate = DateInterval.Reapperance.AddMonths(1).AddMilliseconds(-1);
+                //  completionDate;
+            }
         }
     }
 }
