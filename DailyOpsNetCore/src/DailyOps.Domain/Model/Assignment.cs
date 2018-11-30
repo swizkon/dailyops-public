@@ -36,12 +36,27 @@ namespace DailyOps.Domain.Model
         {
             // DateInterval.Reapperance = completionDate;
 
-            if(Interval == Reccurence.Monthly)
+            if (Interval == Reccurence.Daily)
+            {
+                DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, completionDate.Day).AddDays(1);
+                DateInterval.ClosingDate = DateInterval.Reapperance.AddDays(1).AddMilliseconds(-1);
+                return;
+            }
+
+            if (Interval == Reccurence.Monthly)
             {
                 DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, completionDate.Day).AddMonths(1);
                 DateInterval.ClosingDate = DateInterval.Reapperance.AddMonths(1).AddMilliseconds(-1);
-                //  completionDate;
+                return;
             }
+
+            if (Interval == Reccurence.Annual)
+            {
+                DateInterval.Reapperance = new DateTime(completionDate.Year + 1, 1, 1);
+                DateInterval.ClosingDate = DateInterval.Reapperance.AddYears(1).AddMilliseconds(-1);
+                return;
+            }
+
         }
     }
 }

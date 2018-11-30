@@ -45,9 +45,11 @@ namespace DailyOps.TestConsole
                         p.Users.Add(usr);
                     }
 
+                    p.Assignments.Add(new Assignment("Plocka undan", Reccurence.Daily));
                     p.Assignments.Add(new Assignment("Städa rummet", Reccurence.Weekly));
                     p.Assignments.Add(new Assignment("Byt lakan", Reccurence.Monthly));
                     p.Assignments.Add(new Assignment("Byt tandborste", Reccurence.Quarterly));
+                    p.Assignments.Add(new Assignment("Byt tandborste", Reccurence.Annual));
 
                     foreach (var a in p.Assignments)
                     {
