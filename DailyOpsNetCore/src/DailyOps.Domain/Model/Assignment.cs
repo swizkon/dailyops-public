@@ -34,12 +34,20 @@ namespace DailyOps.Domain.Model
 
         private void RecalculateDates(DateTime completionDate)
         {
-            // DateInterval.Reapperance = completionDate;
-
             if (Interval == Reccurence.Daily)
             {
                 DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, completionDate.Day).AddDays(1);
                 DateInterval.ClosingDate = DateInterval.Reapperance.AddDays(1).AddMilliseconds(-1);
+                return;
+            }
+
+            if (Interval == Reccurence.Weekly)
+            {
+                DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, completionDate.Day).AddDays(1);
+                while(DateInterval.Reapperance.DayOfWeek != DayOfWeek.Monday)
+                    DateInterval.Reapperance = DateInterval.Reapperance.AddDays(1);
+
+                DateInterval.ClosingDate = DateInterval.Reapperance.AddDays(7).AddMilliseconds(-1);
                 return;
             }
 
