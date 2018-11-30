@@ -2,7 +2,7 @@ namespace DailyOps.Domain.Model
 {
     public class User
     {
-        public virtual int Id { get; protected set; }
+        public virtual long Id { get; protected set; }
 
         public virtual string DisplayName { get; set; }
 

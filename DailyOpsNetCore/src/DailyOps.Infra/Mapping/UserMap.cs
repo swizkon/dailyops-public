@@ -10,11 +10,11 @@ namespace DailyOps.Infra.Mapping
         public UserMap()
         {
             Id(x => x.Id);
-            
+
             Map(x => x.DisplayName)
               .Length(20)
               .Not.Nullable();
-            
+
             Map(x => x.FirstName)
               .Length(50);
 
