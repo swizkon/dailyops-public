@@ -53,7 +53,7 @@ namespace DailyOps.Domain.Model
 
             if (Interval == Reccurence.Monthly)
             {
-                DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, completionDate.Day).AddMonths(1);
+                DateInterval.Reapperance = new DateTime(completionDate.Year, completionDate.Month, 1).AddMonths(1);
                 DateInterval.ClosingDate = DateInterval.Reapperance.AddMonths(1).AddMilliseconds(-1);
                 return;
             }
