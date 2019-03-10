@@ -31,7 +31,7 @@ namespace DailyOps.Domain.Model.Tests
             new object[] { Reccurence.Weekly, DateTime.Parse("2018-12-13 12:34:00"), DateTime.Parse("2018-12-17")},
             new object[] { Reccurence.Monthly, DateTime.Parse("2018-10-13 12:34:00"), DateTime.Parse("2018-11-01")},
             new object[] { Reccurence.Annual, DateTime.Parse("2018-10-13 12:34:00"), DateTime.Parse("2019-01-01")},
-            new object[] { Reccurence.Annual, DateTime.Parse("2019-02-13 12:34:00"), DateTime.Parse("2019-04-01")}
+            new object[] { Reccurence.Quarterly, DateTime.Parse("2019-02-13 12:34:00"), DateTime.Parse("2019-04-01")}
         };
     }
 }
